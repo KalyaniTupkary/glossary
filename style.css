@@ -1,0 +1,136 @@
+
+body, html {
+    font-family: 'EB Garamond', serif;
+
+    margin: 0;
+    padding: 0;
+    scrollbar-width: none; /* Firefox */
+}
+
+h1, h2, h3 {
+    font-weight: normal;
+    margin: 0;
+}
+
+.entry {
+    
+ 
+    width: 75vw;
+    height: 100%; /* Ensure the height fills the container */
+    border: 1px solid black;
+    flex-shrink: 0; /* Prevent flex items from shrinking */
+    display:inline-block;
+    position: absolute;
+    background:#F9F6EF;
+    /* z-index:1; */
+    transition: all .5s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    
+}
+
+@media (max-width: 768px) {
+    .entry {
+        width: calc(100vw - 24px);
+    }
+    
+}
+
+.word {
+    font-size: 3.75em;
+}
+
+.word-type {
+    color: #CF0707;
+    font-family: 'Alegreya';
+    font-style: italic;
+    font-weight: 500;
+}
+
+.definition {
+    font-size: 1.5em;
+}
+
+.entry-content {
+    width: 72%;
+}
+
+.entry:not(.current):hover {
+    background-color: #d0d0d0;
+}
+
+.entries {
+    width:100vw;
+    flex-grow: 1;
+}
+
+/* .entry:nth-child(odd) {
+    background-color: #f0f0f0;
+} */
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Prevent container overflow */
+    position: fixed;
+    overflow-y: hidden;
+    background: #F9F6EF;;
+}
+
+
+.header {
+    background:#F9F6EF;
+    /* height: 50px; */
+    width: 100%;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    color: black;
+    border: 1px solid black;
+    border-bottom: none;
+}
+
+.logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.logo img {
+
+    height: 40px;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+
+body {
+    height: 30000px;
+}
+
+
+
+.progress-indicator {
+    position: fixed;
+    bottom: 0;
+    height: 20px;
+    width: 120px;
+    background-color: #000000;
+    transform: translateX(-50%);
+    transition: left 0.5s ease;
+    left: 0;
+}
+
