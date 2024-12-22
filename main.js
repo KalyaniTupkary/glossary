@@ -7,6 +7,18 @@ class Entry {
         this.isClicked = false;
         this.updatePosition();
         this.addClickListener();
+
+        this.timerInterval = null; // To track the live timer interval
+        this.timeElapsed = 0; // Elapsed time in seconds
+        this.relatedWords = [
+            "word 1",
+            "word 2",
+            "word 3",
+            "word 4",
+            "word 5",
+        ]; // Array of related words
+        this.relatedWordsIndex = 0; // Tracks which related word to show next
+        this.relatedWordsTimer = null; // Timer for adding related words
     }
 
     updatePosition(currentIndex = null) {
@@ -18,8 +30,12 @@ class Entry {
         // Toggle 'current' class based on whether it's the current entry
         if (this.index === currentIndex) {
             this.element.classList.add("current");
+            // this.startTimer(); // Start timer when the entry becomes current
+            // this.startRelatedWordsTimer(); // Start related words timer
         } else {
             this.element.classList.remove("current");
+            // this.stopTimer(); // Stop timer when the entry is no longer current
+            // this.stopRelatedWordsTimer(); // Stop related words timer
         }
     }
 
@@ -32,6 +48,91 @@ class Entry {
                 console.log(`Clicked on entry ${this.index}`);
             }
         });
+    }
+
+    startTimer() {
+        // Reset elapsed time and update immediately
+        this.timeElapsed = 0;
+        this.updateTimeDisplay();
+
+        // Start interval to update the timer every second
+        if (!this.timerInterval) {
+            this.timerInterval = setInterval(() => {
+                this.timeElapsed++;
+                this.updateTimeDisplay();
+            }, 1000);
+        }
+    }
+
+    stopTimer() {
+        // Stop the timer interval
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+    }
+
+    updateTimeDisplay() {
+        // Update the <p class="time"> element inside this entry
+        const timeElement = this.element.querySelector(".time");
+        if (timeElement) {
+            timeElement.textContent = `Time on this entry: ${this.timeElapsed} second${this.timeElapsed !== 1 ? "s" : ""}`;
+        }
+    }
+
+    startRelatedWordsTimer() {
+        // Reset index and clear any previous timer
+        this.relatedWordsIndex = 0;
+        this.stopRelatedWordsTimer();
+
+        // Start a timer for the first related word after 5 seconds
+        this.relatedWordsTimer = setTimeout(() => {
+            this.addRelatedWord(this.relatedWords[this.relatedWordsIndex]);
+
+            // Continue adding a new word every second
+            this.relatedWordsTimer = setInterval(() => {
+                this.relatedWordsIndex++;
+                if (this.relatedWordsIndex < this.relatedWords.length) {
+                    this.addRelatedWord(this.relatedWords[this.relatedWordsIndex]);
+                } else {
+                    // Stop the interval if all words are added
+                    this.stopRelatedWordsTimer();
+                }
+            }, 1000);
+        }, 1000);
+    }
+
+    stopRelatedWordsTimer() {
+        // Clear both the timeout and interval for related words
+        clearTimeout(this.relatedWordsTimer);
+        clearInterval(this.relatedWordsTimer);
+        this.relatedWordsTimer = null;
+    }
+
+    addRelatedWord(word) {
+        if (!word) return;
+    
+        // Create a new element for the related word
+        const wordElement = document.createElement("div");
+        wordElement.classList.add("related-word");
+        wordElement.textContent = word;
+    
+        // Get dimensions of the entry element
+        const { width, height } = this.element.getBoundingClientRect();
+    
+        // Randomly choose top or bottom third
+        const isTop = Math.random() < 0.5;
+        const randomX = Math.random() * width; // Full width of the div
+        const randomY = isTop
+            ? Math.random() * (height / 3) // Top third
+            : Math.random() * (height / 3) + (2 * height / 3); // Bottom third
+    
+        // Style the related word element
+        wordElement.style.position = "absolute";
+        wordElement.style.left = `${randomX}px`;
+        wordElement.style.top = `${randomY}px`;
+        wordElement.style.transform = "translate(-50%, -50%)";
+    
+        // Append the word to the entry div
+        this.element.appendChild(wordElement);
     }
 }
 
@@ -50,8 +151,8 @@ function calculatePosition(index, currentIndex, isMobile, padding, elementWidth)
     } else {
         // Entries before the current one
         return isMobile
-            ? `${-elementWidth+12}px` // Peak 12px on the left
-            : `-${elementWidth - padding * (index + 1)}px`;
+            ? `${-elementWidth + 12}px` // Peak 12px on the left
+            : `-${elementWidth - padding * (index + 1) -1}px`;
     }
 }
 
@@ -91,9 +192,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ${data.word} <span class="word-type">${data.pos}</span>
                 </h2>
                 <p class="definition">${data.description}</p>
+                <p class="time">Time on this entry: 0 seconds</p>
             </div>
         `;
-        entriesContainer.appendChild(entryElement);
+        entriesContainer.insertBefore(entryElement, document.querySelector(".entry.suggest"));
+        // appendChild(entryElement);
     });
 
     const entries = document.querySelectorAll(".entry");
@@ -105,22 +208,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let currentIndex = 0; // Start at index 0
     entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-
-    const progressIndicator = document.createElement("div");
-    progressIndicator.classList.add("progress-indicator");
-    document.body.appendChild(progressIndicator);
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowLeft" && currentIndex > 0) {
-            currentIndex--;
-            entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-            updateProgressIndicator(currentIndex, entryCount);
-        } else if (event.key === "ArrowRight" && currentIndex < entryCount - 1) {
-            currentIndex++;
-            entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-            updateProgressIndicator(currentIndex, entryCount);
-        }
-    });
 
     // GSAP ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
@@ -141,17 +228,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (newIndex !== currentIndex) {
                 currentIndex = newIndex;
                 entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-                updateProgressIndicator(currentIndex, entryCount);
             }
         }
     });
-
-    function updateProgressIndicator(currentIndex, entryCount) {
-        const progressPercentage = ((currentIndex + 0.5) / entryCount) * 100;
-        progressIndicator.style.left = `${progressPercentage}%`;
-    }
-
-    updateProgressIndicator(currentIndex, entryCount);
 
     // Handle window resize
     window.addEventListener("resize", () => {
@@ -159,29 +238,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         entryObjects.forEach(entry => {
             entry.padding = padding; // Update padding for each Entry instance
             entry.updatePosition(currentIndex);
-        });
-
-        // Update ScrollTrigger's end point
-        scrollTrigger.kill();
-        ScrollTrigger.create({
-            trigger: "body",
-            start: "top top",
-            end: `+=${window.innerHeight * entryCount}`,
-            scrub: true,
-            snap: {
-                snapTo: 1 / (entryCount - 1),
-                duration: { min: 0.2, max: 0.5 },
-                ease: "power1.inOut"
-            },
-            onUpdate: (self) => {
-                const progress = self.progress * (entryCount - 1);
-                const newIndex = Math.round(progress);
-                if (newIndex !== currentIndex) {
-                    currentIndex = newIndex;
-                    entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-                    updateProgressIndicator(currentIndex, entryCount);
-                }
-            }
         });
     });
 });

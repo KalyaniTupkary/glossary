@@ -1,3 +1,7 @@
+/* 
+* {
+    box-sizing: border-box;
+} */
 
 body, html {
     font-family: 'EB Garamond', serif;
@@ -13,8 +17,7 @@ h1, h2, h3 {
 }
 
 .entry {
-    
- 
+    box-sizing: border-box;
     width: 75vw;
     height: 100%; /* Ensure the height fills the container */
     border: 1px solid black;
@@ -22,7 +25,6 @@ h1, h2, h3 {
     display:inline-block;
     position: absolute;
     background:#F9F6EF;
-    /* z-index:1; */
     transition: all .5s ease-in-out;
     display: flex;
     flex-direction: column;
@@ -31,6 +33,8 @@ h1, h2, h3 {
 
     
 }
+
+
 
 @media (max-width: 768px) {
     .entry {
@@ -74,7 +78,7 @@ h1, h2, h3 {
 .container {
     width: 100vw;
     height: 100vh;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     display: flex;
     flex-direction: column;
     overflow-x: hidden; /* Prevent container overflow */
@@ -87,7 +91,7 @@ h1, h2, h3 {
 .header {
     background:#F9F6EF;
     /* height: 50px; */
-    width: 100%;
+    /* width: 100%; */
     border: 1px solid black;
     display: flex;
     flex-direction: row;
@@ -123,6 +127,7 @@ body {
 
 
 
+
 .progress-indicator {
     position: fixed;
     bottom: 0;
@@ -134,3 +139,35 @@ body {
     left: 0;
 }
 
+.related-word {
+    font-size: 14px;
+    font-style: italic;
+    color: #333;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+}
+
+.intro {
+    width: 60%;
+    position: relative;
+}
+
+#clock {
+    /* width: 30%; */
+    position: absolute;
+    font-style: italic;
+    top: -4.5em;
+    left: -150px;
+    text-align: right;
+
+
+}
+
+
+.nav  {
+    display: flex;  
+    list-style: none;
+    flex-direction: row;
+    gap: 20px;
+}
