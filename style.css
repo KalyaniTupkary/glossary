@@ -166,7 +166,7 @@ h1 {
     border-top: 1px solid black;
     background: #F9F6EF;
     width: 100vw;
-    z-index: 9999;
+    z-index: 9998;
     overflow: hidden; /* Prevent overflow */
 }
 

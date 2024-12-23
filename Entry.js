@@ -5,9 +5,6 @@ class Entry {
         this.padding = padding;
         this.entries = entries;
         this.isClicked = false;
-        this.updatePosition();
-        this.addClickListener();
-
         this.timerInterval = null; // To track the live timer interval
         this.timeElapsed = 0; // Elapsed time in seconds
         this.relatedWords = [
@@ -19,6 +16,9 @@ class Entry {
         ]; // Array of related words
         this.relatedWordsIndex = 0; // Tracks which related word to show next
         this.relatedWordsTimer = null; // Timer for adding related words
+
+        this.updatePosition();
+        this.addClickListener();
     }
 
     updatePosition(currentIndex = null) {
@@ -27,11 +27,13 @@ class Entry {
         this.element.style.left = position;
         this.element.style.zIndex = 100 - this.index;
 
-        // Toggle 'current' class based on whether it's the current entry
+        // Toggle 'current' class and start/stop timer
         if (this.index === currentIndex) {
             this.element.classList.add("current");
+            this.startTimer(); // Start the timer when the entry becomes current
         } else {
             this.element.classList.remove("current");
+            this.stopTimer(); // Stop the timer when the entry is no longer current
         }
     }
 
@@ -47,10 +49,36 @@ class Entry {
                 // Update the current positions and classes
                 this.entries.forEach(entry => entry.updatePosition(currentIndex));
                 console.log(`Clicked on entry ${this.index}`);
-                updateProgressBar();
+                updateProgressBar(); // Update progress bar
             }
         });
+    }
 
+    startTimer() {
+        // Reset elapsed time
+        this.timeElapsed = 0;
+        this.updateTimeDisplay();
 
+        // Start interval to update the timer every second
+        if (!this.timerInterval) {
+            this.timerInterval = setInterval(() => {
+                this.timeElapsed++;
+                this.updateTimeDisplay();
+            }, 1000);
+        }
+    }
+
+    stopTimer() {
+        // Stop the timer interval
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+    }
+
+    updateTimeDisplay() {
+        // Update the <p class="time"> element inside this entry
+        const timeElement = this.element.querySelector(".time");
+        if (timeElement) {
+            timeElement.textContent = `Time on this entry: ${this.timeElapsed} second${this.timeElapsed !== 1 ? "s" : ""}`;
+        }
     }
 }
