@@ -43,14 +43,14 @@ function numberToWordsWithOrdinal(num) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const clockElement = document.getElementById("clock");
+// document.addEventListener("DOMContentLoaded", () => {
+//     const clockElement = document.getElementById("clock");
 
-    const updateClock = () => {
-        clockElement.innerHTML = getNaturalLanguageTime(); // Use innerHTML to handle the <br>
-    };
+//     const updateClock = () => {
+//         clockElement.innerHTML = getNaturalLanguageTime(); // Use innerHTML to handle the <br>
+//     };
 
-    // Update clock every second
-    updateClock();
-    setInterval(updateClock, 1000);
-});
+//     // Update clock every second
+//     updateClock();
+    
+// });

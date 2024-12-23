@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <script src="calculatePosition.js" defer></script>
     <script src="clock.js" defer></script>
+    <script src="Entry.js" defer></script>
     <script src="related-words.js" defer></script>
     <script src="main.js" defer></script>
     <script src="logo.js" defer></script>
@@ -18,6 +20,9 @@
   
 </head>
 <body>
+    <div id="load">
+        <img src="images/logos/1.png" alt="">
+    </div>
     <div class="container">
         <div class="header">
 
@@ -28,44 +33,17 @@
 
             
                 <ul class="nav">
-                    <li><a href="index.html">About</a></li>
-                    <li><a href="glossary.html">Suggest a Word</a></li>
+                    <li id="navAbout"">About</li>
+                    <li id="navSuggest">Suggest a Word</li>
                 </ul>
             
             
         </div>
         <div class="entries">
-            <div class="entry about">
-                
-                <p class="intro">
-                <span id="clock"></span> 
-                    Dear reader,<br><br>
-
-                More than what we can do with words, this glossary uncovers what words can do with us. These words give form to the nuanced phenomena we encounter—leaky sensations, feelings, in-between moments, and fleeting experiences that can be named but don’t seem to be.
-                <br><br>
-                We all have these textured experiences of time, but a rather limited set of words to describe them. There are gaping holes in the lexicon of time that we don’t even know we are missing. When these experiences remain unnamed, they remain unwritten, undefined and hence unknown.
-                <br><br>
-                To name them, I tinkered with ChatGPT, feeding it elusive experiences as prompts. What began as a playful experiment soon drew on AI’s ability to ‘hallucinate’ or imagine notions beyond our known reality to deepen our understanding of time. 
-                <br><br>
-                Peruse it slowly,
-                Kalyani
-                <br><br>
-                P.S. Project by yours truly, with the website brought to life by Jon Packles.
-                </p>
-                
-
-
-            </div>
-
-            <div class="entry suggest">
-                <p class="suggest-text">
-                    Have a word you'd like to see here?<br>
-                    Submit your suggestion below.<br><br>
-                    <a href="#suggest-form" class="suggest-link">Suggest a Word</a>
-                </p>
-            </div>
         </div>
-    
+        <div id="progress">
+            <div class="bar"></div>
+        </div>
     </div>
     
     

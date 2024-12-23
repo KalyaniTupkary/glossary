@@ -23,4 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
             clearInterval(intervalId);
         });
     });
+
+    const loadLogo = document.querySelectorAll(".logo"); // Select all .logo elements
 });

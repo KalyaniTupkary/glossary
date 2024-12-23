@@ -1,162 +1,18 @@
-class Entry {
-    constructor(element, index, padding, entries) {
-        this.element = element;
-        this.index = index;
-        this.padding = padding;
-        this.entries = entries;
-        this.isClicked = false;
-        this.updatePosition();
-        this.addClickListener();
-
-        this.timerInterval = null; // To track the live timer interval
-        this.timeElapsed = 0; // Elapsed time in seconds
-        this.relatedWords = [
-            "word 1",
-            "word 2",
-            "word 3",
-            "word 4",
-            "word 5",
-        ]; // Array of related words
-        this.relatedWordsIndex = 0; // Tracks which related word to show next
-        this.relatedWordsTimer = null; // Timer for adding related words
-    }
-
-    updatePosition(currentIndex = null) {
-        const isMobile = window.innerWidth < 768; // Mobile detection
-        const position = calculatePosition(this.index, currentIndex, isMobile, this.padding, this.element.offsetWidth);
-        this.element.style.left = position;
-        this.element.style.zIndex = 100 - this.index;
-
-        // Toggle 'current' class based on whether it's the current entry
-        if (this.index === currentIndex) {
-            this.element.classList.add("current");
-            // this.startTimer(); // Start timer when the entry becomes current
-            // this.startRelatedWordsTimer(); // Start related words timer
-        } else {
-            this.element.classList.remove("current");
-            // this.stopTimer(); // Stop timer when the entry is no longer current
-            // this.stopRelatedWordsTimer(); // Stop related words timer
-        }
-    }
-
-    addClickListener() {
-        this.element.addEventListener("click", () => {
-            if (!this.element.classList.contains("current")) {
-                this.entries.forEach(entry => entry.isClicked = false);
-                this.isClicked = true;
-                this.entries.forEach(entry => entry.updatePosition(this.index));
-                console.log(`Clicked on entry ${this.index}`);
-            }
-        });
-    }
-
-    startTimer() {
-        // Reset elapsed time and update immediately
-        this.timeElapsed = 0;
-        this.updateTimeDisplay();
-
-        // Start interval to update the timer every second
-        if (!this.timerInterval) {
-            this.timerInterval = setInterval(() => {
-                this.timeElapsed++;
-                this.updateTimeDisplay();
-            }, 1000);
-        }
-    }
-
-    stopTimer() {
-        // Stop the timer interval
-        clearInterval(this.timerInterval);
-        this.timerInterval = null;
-    }
-
-    updateTimeDisplay() {
-        // Update the <p class="time"> element inside this entry
-        const timeElement = this.element.querySelector(".time");
-        if (timeElement) {
-            timeElement.textContent = `Time on this entry: ${this.timeElapsed} second${this.timeElapsed !== 1 ? "s" : ""}`;
-        }
-    }
-
-    startRelatedWordsTimer() {
-        // Reset index and clear any previous timer
-        this.relatedWordsIndex = 0;
-        this.stopRelatedWordsTimer();
-
-        // Start a timer for the first related word after 5 seconds
-        this.relatedWordsTimer = setTimeout(() => {
-            this.addRelatedWord(this.relatedWords[this.relatedWordsIndex]);
-
-            // Continue adding a new word every second
-            this.relatedWordsTimer = setInterval(() => {
-                this.relatedWordsIndex++;
-                if (this.relatedWordsIndex < this.relatedWords.length) {
-                    this.addRelatedWord(this.relatedWords[this.relatedWordsIndex]);
-                } else {
-                    // Stop the interval if all words are added
-                    this.stopRelatedWordsTimer();
-                }
-            }, 1000);
-        }, 1000);
-    }
-
-    stopRelatedWordsTimer() {
-        // Clear both the timeout and interval for related words
-        clearTimeout(this.relatedWordsTimer);
-        clearInterval(this.relatedWordsTimer);
-        this.relatedWordsTimer = null;
-    }
-
-    addRelatedWord(word) {
-        if (!word) return;
-    
-        // Create a new element for the related word
-        const wordElement = document.createElement("div");
-        wordElement.classList.add("related-word");
-        wordElement.textContent = word;
-    
-        // Get dimensions of the entry element
-        const { width, height } = this.element.getBoundingClientRect();
-    
-        // Randomly choose top or bottom third
-        const isTop = Math.random() < 0.5;
-        const randomX = Math.random() * width; // Full width of the div
-        const randomY = isTop
-            ? Math.random() * (height / 3) // Top third
-            : Math.random() * (height / 3) + (2 * height / 3); // Bottom third
-    
-        // Style the related word element
-        wordElement.style.position = "absolute";
-        wordElement.style.left = `${randomX}px`;
-        wordElement.style.top = `${randomY}px`;
-        wordElement.style.transform = "translate(-50%, -50%)";
-    
-        // Append the word to the entry div
-        this.element.appendChild(wordElement);
-    }
-}
-
-// Helper function to calculate position
-function calculatePosition(index, currentIndex, isMobile, padding, elementWidth) {
-    if (currentIndex === null) return "0px";
-
-    if (index === currentIndex) {
-        // Current entry is centered
-        return isMobile ? "12px" : `${padding * index}px`;
-    } else if (index > currentIndex) {
-        // Entries after the current one
-        return isMobile
-            ? `${12}px` // Peak 12px on the right
-            : `${padding * index}px`;
-    } else {
-        // Entries before the current one
-        return isMobile
-            ? `${-elementWidth + 12}px` // Peak 12px on the left
-            : `-${elementWidth - padding * (index + 1) -1}px`;
-    }
-}
+let currentIndex = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    const loadingScreen = document.getElementById("load");
+
+    // Function to hide the loading screen
+    function hideLoadingScreen() {
+        setTimeout(() => {
+            loadingScreen.classList.add("hidden");
+        }, 2000); // Add a 2-second delay
+    }
+
+
+
     const GOOGLE_SHEETS_API_URL = 'https://sheets.googleapis.com/v4/spreadsheets/1hL_f05Hzl_vdeEyiOuxKZ2LV3oRPaUUlZYkDd9n4ngg/values/Glossary?key=AIzaSyBvMMzxGc8F_GTs7ytfJDNo_ZEWp_wze5k';
 
     const fetchEntries = async () => {
@@ -177,12 +33,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
+
     const entriesContainer = document.querySelector(".entries");
+
+    // Dynamically create and append the "about" entry
+    const aboutEntry = document.createElement("div");
+    aboutEntry.classList.add("entry", "about");
+    aboutEntry.innerHTML = `
+        <p class="intro">
+            <span id="clock"></span> 
+            Dear reader,<br><br>
+            More than what we can do with words, this glossary uncovers what words can do with us. These words give form to the nuanced phenomena we encounter—leaky sensations, feelings, in-between moments, and fleeting experiences that can be named but don’t seem to be.
+            <br><br>
+            We all have these textured experiences of time, but a rather limited set of words to describe them. There are gaping holes in the lexicon of time that we don’t even know we are missing. When these experiences remain unnamed, they remain unwritten, undefined and hence unknown.
+            <br><br>
+            To name them, I tinkered with ChatGPT, feeding it elusive experiences as prompts. What began as a playful experiment soon drew on AI’s ability to ‘hallucinate’ or imagine notions beyond our known reality to deepen our understanding of time. 
+            <br><br>
+            Peruse it slowly,<br>
+            Kalyani
+            <br><br>
+            P.S. Project by yours truly, with the website brought to life by Jon Packles.
+        </p>
+    `;
+    entriesContainer.appendChild(aboutEntry);
+    document.getElementById("clock").innerHTML = getNaturalLanguageTime();
 
     // Fetch and format entries
     const dataset = await fetchEntries();
 
-    // Dynamically create and append .entry elements
+    // Dynamically create and append regular .entry elements
     dataset.forEach((data) => {
         const entryElement = document.createElement("div");
         entryElement.classList.add("entry");
@@ -192,52 +71,115 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ${data.word} <span class="word-type">${data.pos}</span>
                 </h2>
                 <p class="definition">${data.description}</p>
-                <p class="time">Time on this entry: 0 seconds</p>
             </div>
         `;
-        entriesContainer.insertBefore(entryElement, document.querySelector(".entry.suggest"));
-        // appendChild(entryElement);
+        entriesContainer.appendChild(entryElement);
     });
 
-    const entries = document.querySelectorAll(".entry");
-    const entryCount = entries.length;
-    let padding = window.innerWidth * 0.25 / entryCount;
+    // Dynamically create and append the "suggest a word" entry
+    const suggestEntry = document.createElement("div");
+    suggestEntry.classList.add("entry", "suggest");
+    suggestEntry.innerHTML = `
+       <div class="suggest-content">
+            <p class="suggest-text">
+                Words can render new realities and expand our perception of time. Share your experiences—specific or vague—that might otherwise fall through the cracks of conventional language.
+            </p>
+            <form class="suggest-form">
+                <label for="name">name</label>
+                <input type="text" id="name" name="name" />
 
-    const entryObjects = Array.from(entries).map((entry, index) => new Entry(entry, index, padding, []));
+                <label for="email">email</label>
+                <input type="email" id="email" name="email" />
+
+                <label for="word-details">words about the word</label>
+                <textarea id="word-details" name="word-details"></textarea>
+
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    `;
+    entriesContainer.appendChild(suggestEntry);
+
+    hideLoadingScreen();
+
+    // Select all dynamically created entries
+    const allEntries = document.querySelectorAll(".entry");
+    const entryCount = allEntries.length;
+    let padding = window.innerWidth * 0.25 / (entryCount - 1);
+
+    function updateProgressBar() {
+        const progressBar = document.querySelector("#progress .bar");
+        const progressPercentage = ((currentIndex) / entryCount) * 100; // Calculate progress
+        progressBar.style.width = `${100/entryCount * 8}%`;
+        progressBar.style.left = `${progressPercentage}%`;
+        // console.log(100/entryCount);
+    }
+
+    const entryObjects = Array.from(allEntries).map((entry, index) => new Entry(entry, index, padding, []));
     entryObjects.forEach(entry => entry.entries = entryObjects);
-
-    let currentIndex = 0; // Start at index 0
+    updateProgressBar();
+    // Start at index 0
     entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-
-    // GSAP ScrollTrigger
-    gsap.registerPlugin(ScrollTrigger);
-
-    const scrollTrigger = ScrollTrigger.create({
-        trigger: "body",
-        start: "top top",
-        end: () => `+=${window.innerHeight * entryCount}`,
-        scrub: true,
-        snap: {
-            snapTo: 1 / (entryCount - 1),
-            duration: { min: 0.2, max: 0.5 },
-            ease: "power1.inOut"
-        },
-        onUpdate: (self) => {
-            const progress = self.progress * (entryCount - 1);
-            const newIndex = Math.round(progress);
-            if (newIndex !== currentIndex) {
-                currentIndex = newIndex;
-                entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-            }
-        }
-    });
 
     // Handle window resize
     window.addEventListener("resize", () => {
         padding = window.innerWidth * 0.25 / entryCount;
         entryObjects.forEach(entry => {
-            entry.padding = padding; // Update padding for each Entry instance
+            entry.padding = padding;
             entry.updatePosition(currentIndex);
         });
+        updateProgressBar();
+    });
+
+    document.getElementById("navAbout").addEventListener("click", () => {
+        currentIndex = 0;
+        updateProgressBar(); 
+        entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+    });
+
+    document.getElementById("navSuggest").addEventListener("click", () => {
+        currentIndex = entryObjects.length - 1;
+        updateProgressBar(); 
+        entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+    });
+
+    let isAnimating = false;
+
+    function handleScroll(event) {
+        if (isAnimating) return;
+
+        const delta = event.deltaY || event.detail || -event.wheelDelta;
+        const direction = delta > 0 ? 1 : -1;
+
+        if ((direction === 1 && currentIndex < entryCount - 1) || (direction === -1 && currentIndex > 0)) {
+            currentIndex += direction;
+            isAnimating = true;
+            updateProgressBar(); 
+            entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+
+            setTimeout(() => {
+                isAnimating = false;
+            }, 1000);
+        }
+    }
+
+    document.addEventListener("wheel", handleScroll, { passive: false });
+    
+
+    let touchStartY = 0;
+    document.addEventListener("touchstart", (event) => {
+        touchStartY = event.touches[0].clientY;
+    });
+
+    document.addEventListener("touchmove", (event) => {
+        const touchEndY = event.touches[0].clientY;
+        const delta = touchStartY - touchEndY;
+
+        if (Math.abs(delta) > 50) {
+            handleScroll({ deltaY: delta });
+        }
     });
 });
+
+
+
