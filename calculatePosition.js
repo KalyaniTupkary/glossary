@@ -4,8 +4,11 @@ function calculatePosition(index, currentIndex, isMobile, padding, elementWidth)
     if (index === currentIndex) {
         return isMobile ? "12px" : `${padding * index}px`;
     } else if (index > currentIndex) {
-        return isMobile ? `${12}px` : `${padding * index}px`;
+        return isMobile ? `${24}px` : `${padding * index}px`;
+    } else if (index === currentIndex - 1) {
+        return isMobile ? `${-elementWidth + 12 + 2}px` : `-${elementWidth - padding * (index + 1) - 2}px`;
+        // return isMobile ? `-${12}px` : `-${elementWidth - padding * (index + 1) - 1}px`;
     } else {
-        return isMobile ? `${-elementWidth + 12}px` : `-${elementWidth - padding * (index + 1) - 1}px`;
+        return isMobile ? `${-elementWidth}px` : `-${elementWidth - padding * (index + 1) - 2}px`;
     }
 }

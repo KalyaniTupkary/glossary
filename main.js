@@ -1,17 +1,20 @@
 let currentIndex = 0;
 
+
+
 document.addEventListener("DOMContentLoaded", async () => {
 
-    const loadingScreen = document.getElementById("load");
+  
+     const loadingScreen = document.getElementById("load");
 
     // Function to hide the loading screen
     function hideLoadingScreen() {
-        setTimeout(() => {
+     
+        setTimeout(()=> {
             loadingScreen.classList.add("hidden");
-        }, 2000); // Add a 2-second delay
+        },2000)
+       
     }
-
-
 
     const GOOGLE_SHEETS_API_URL = 'https://sheets.googleapis.com/v4/spreadsheets/1hL_f05Hzl_vdeEyiOuxKZ2LV3oRPaUUlZYkDd9n4ngg/values/Glossary?key=AIzaSyBvMMzxGc8F_GTs7ytfJDNo_ZEWp_wze5k';
 
@@ -38,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Dynamically create and append the "about" entry
     const aboutEntry = document.createElement("div");
-    aboutEntry.classList.add("entry", "about");
+    aboutEntry.classList.add("about");
     aboutEntry.innerHTML = `
         <p class="intro">
             <span id="clock"></span> 
@@ -55,7 +58,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             P.S. Project by yours truly, with the website brought to life by Jon Packles.
         </p>
     `;
-    entriesContainer.appendChild(aboutEntry);
+    let isMobile = window.innerWidth < 768; // Mobile detection
+
+    let mainContainer = document.querySelector(".container");
+
+    if (isMobile) {
+        
+        mainContainer.appendChild(aboutEntry);
+        aboutEntry.style.top = `${-aboutEntry.offsetHeight + 48}px`;
+        aboutEntry.addEventListener("click", () => {
+            aboutEntry.style.top = "0";
+        });
+        
+    } else {
+        aboutEntry.classList.add("entry");
+        entriesContainer.appendChild(aboutEntry);
+    }
+    
     document.getElementById("clock").innerHTML = getNaturalLanguageTime();
 
     // Fetch and format entries
@@ -76,9 +95,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         entriesContainer.appendChild(entryElement);
     });
 
+
+
     // Dynamically create and append the "suggest a word" entry
     const suggestEntry = document.createElement("div");
-    suggestEntry.classList.add("entry", "suggest");
+    suggestEntry.classList.add("suggest");
     suggestEntry.innerHTML = `
        <div class="suggest-content">
             <p class="suggest-text">
@@ -94,12 +115,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <label for="word-details">words about the word</label>
                 <textarea id="word-details" name="word-details"></textarea>
 
-                <button type="submit">Send</button>
+                <button type="submit">Submit</button>
             </form>
         </div>
     `;
-    entriesContainer.appendChild(suggestEntry);
 
+    if (isMobile) {
+        mainContainer.appendChild(suggestEntry);
+        suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 48}px`;
+        suggestEntry.addEventListener("click", () => {
+            suggestEntry.style.bottom = `${0}px`;
+        });
+        // console.log(suggestEntry.offsetHeight);
+    } else {
+        suggestEntry.classList.add("entry");
+        entriesContainer.appendChild(suggestEntry);
+    }
+    
     hideLoadingScreen();
 
     // Select all dynamically created entries
@@ -110,37 +142,95 @@ document.addEventListener("DOMContentLoaded", async () => {
     function updateProgressBar() {
         const progressBar = document.querySelector("#progress .bar");
         const progressPercentage = ((currentIndex) / entryCount) * 100; // Calculate progress
-        progressBar.style.width = `${100/entryCount * 8}%`;
+        progressBar.style.width = `${100/entryCount}%`;
         progressBar.style.left = `${progressPercentage}%`;
         // console.log(100/entryCount);
     }
 
-    const entryObjects = Array.from(allEntries).map((entry, index) => new Entry(entry, index, padding, []));
+    const progressBar = document.querySelector("#progress .bar");
+    const progressContainer = document.querySelector("#progress");
+    let isDragging = false;
+
+    // Helper function to update entry based on progress bar position
+    function updateEntryFromProgress(progressPercentage) {
+        const targetIndex = Math.round(progressPercentage * (entryCount - 1));
+        if (currentIndex !== targetIndex) {
+            currentIndex = targetIndex;
+            changeEntry(currentIndex);
+        }
+    }
+
+    // Event listener for dragging the progress bar
+    progressBar.addEventListener("mousedown", (event) => {
+        isDragging = true;
+        document.body.style.cursor = "grabbing"; // Change cursor style
+        document.body.style.userSelect = "none"; // Disable text selection
+        progressBar.classList.add("disableTransition");
+        document.body.classList.add("disableHover");
+    });
+
+    document.addEventListener("mousemove", (event) => {
+        if (!isDragging) return;
+
+        const progressBounds = progressContainer.getBoundingClientRect();
+        const mouseX = event.clientX - progressBounds.left;
+        const progressPercentage = Math.max(0, Math.min(mouseX / progressBounds.width, 1)); // Clamp between 0 and 1
+
+        // Update bar position
+        progressBar.style.left = `${progressPercentage * 100}%`;
+
+        // Update the corresponding entry
+        updateEntryFromProgress(progressPercentage);
+    });
+
+    document.addEventListener("mouseup", () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.cursor = "default"; // Reset cursor style
+            document.body.style.userSelect = "";
+
+            // Snap the progress bar to the closest entry
+            const progressPercentage = currentIndex / (entryCount - 1);
+            progressBar.style.left = `${progressPercentage * 100}%`;
+            progressBar.classList.remove("disableTransition");
+            document.body.classList.remove("disableHover");
+        }
+    });
+
+    function changeEntry(targetIndex) {
+        entryObjects.forEach((entry) => entry.element.classList.add("animating"));
+        currentIndex = targetIndex;
+        entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+        updateProgressBar();
+
+        setTimeout(() => {
+            entryObjects.forEach((entry) => entry.element.classList.remove("animating"));
+        }, 800); // Match the CSS transition duration
+    }
+
+
+    const entryObjects = Array.from(allEntries).map((entry, index) => new Entry(entry, index, padding, [], changeEntry));
     entryObjects.forEach(entry => entry.entries = entryObjects);
-    updateProgressBar();
+    
     // Start at index 0
-    entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+
+    const randomIndex = Math.floor(Math.random() * entryCount);
+    changeEntry(randomIndex);
 
     // Handle window resize
     window.addEventListener("resize", () => {
         padding = window.innerWidth * 0.25 / entryCount;
-        entryObjects.forEach(entry => {
-            entry.padding = padding;
-            entry.updatePosition(currentIndex);
-        });
-        updateProgressBar();
+        changeEntry(currentIndex);
     });
 
     document.getElementById("navAbout").addEventListener("click", () => {
         currentIndex = 0;
-        updateProgressBar(); 
-        entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+        changeEntry(currentIndex);
     });
 
     document.getElementById("navSuggest").addEventListener("click", () => {
         currentIndex = entryObjects.length - 1;
-        updateProgressBar(); 
-        entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+        changeEntry(currentIndex);
     });
 
     let isAnimating = false;
@@ -154,8 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if ((direction === 1 && currentIndex < entryCount - 1) || (direction === -1 && currentIndex > 0)) {
             currentIndex += direction;
             isAnimating = true;
-            updateProgressBar(); 
-            entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+            changeEntry(currentIndex);
 
             setTimeout(() => {
                 isAnimating = false;
@@ -180,6 +269,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
-
 
 

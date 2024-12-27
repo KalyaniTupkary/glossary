@@ -1,9 +1,10 @@
 class Entry {
-    constructor(element, index, padding, entries) {
+    constructor(element, index, padding, entries, changeEntry) {
         this.element = element;
         this.index = index;
         this.padding = padding;
         this.entries = entries;
+        this.changeEntry = changeEntry;
         this.isClicked = false;
         this.timerInterval = null; // To track the live timer interval
         this.timeElapsed = 0; // Elapsed time in seconds
@@ -24,6 +25,7 @@ class Entry {
     updatePosition(currentIndex = null) {
         const isMobile = window.innerWidth < 768; // Mobile detection
         const position = calculatePosition(this.index, currentIndex, isMobile, this.padding, this.element.offsetWidth);
+        console.log('position', position)
         this.element.style.left = position;
         this.element.style.zIndex = 100 - this.index;
 
@@ -47,9 +49,9 @@ class Entry {
                 this.isClicked = true;
 
                 // Update the current positions and classes
-                this.entries.forEach(entry => entry.updatePosition(currentIndex));
-                console.log(`Clicked on entry ${this.index}`);
-                updateProgressBar(); // Update progress bar
+
+                this.changeEntry(this.index)
+    
             }
         });
     }
