@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (isMobile) {
 
             mainContainer.appendChild(suggestEntry);
-            suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 64}px`;
+            suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 48}px`;
     
             suggestEntry.addEventListener("click", (event) => {
                 event.stopPropagation(); // Prevent click from propagating to the document
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
             document.addEventListener("click", (event) => {
                 if (suggestIsOpen && !suggestEntry.contains(event.target)) {
-                suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 64}px`;
+                suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 48}px`;
                 suggestIsOpen = false;
                 }
             });
