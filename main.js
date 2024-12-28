@@ -137,8 +137,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <label for="email">email</label>
                 <input type="email" id="email" name="email" required />
 
-                <label for="word-details">words about the word</label>
-                <textarea id="word-details" name="word-details" required></textarea>
+                <label for="wordDetails">words about the word</label>
+                <textarea id="word-details" name="wordDetails" required></textarea>
 
                 <button type="submit">Submit</button>
             </form>
@@ -184,25 +184,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("suggestForm").addEventListener("submit", async (event) => {
         event.preventDefault(); // Prevent the default form submission
     
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData.entries());
+        const formData = new FormData(event.target); // Create FormData object from the form
     
         try {
-            const response = await fetch("https://script.google.com/macros/s/AKfycbyu5cg6LWBtt4PXLLRXhSjN1VgORzVAxcOfXfFhnSI7izT8rzdWANkKtlSAaZHBW9k81Q/exec", {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbxhAQzQS-9UF2ObIaEA5Gt5dKJf6smbGaZ5MzjE71SImJ1UnpM6mPa_xclQru2EWJBdlQ/exec", {
                 method: "POST",
-                body: JSON.stringify(data),
-                headers: { "Content-Type": "application/json" },
+                body: formData,
+                mode: "no-cors",
             });
     
-            const result = await response.json();
+            const result = await response.json(); // Parse the response as JSON
             if (result.status === "success") {
                 alert("Form submitted successfully!");
             } else {
-                alert("Failed to submit form.");
+                // alert("Failed to submit form.");
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("An error occurred while submitting the form.");
+            // alert("An error occurred while submitting the form.");
         }
     });
 
