@@ -12,3 +12,4 @@ function calculatePosition(index, currentIndex, isMobile, padding, elementWidth)
         return isMobile ? `${-elementWidth}px` : `-${elementWidth - padding * (index + 1) - 2}px`;
     }
 }
+

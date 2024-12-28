@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     const entriesContainer = document.querySelector(".entries");
-
+    let isMobile = window.innerWidth < 768; // Mobile detection
     // Dynamically create and append the "about" entry
     const aboutEntry = document.createElement("div");
     aboutEntry.classList.add("about");
@@ -57,23 +57,47 @@ document.addEventListener("DOMContentLoaded", async () => {
             <br><br>
             P.S. Project by yours truly, with the website brought to life by Jon Packles.
         </p>
+
+        ${isMobile ? '<div class="mobileNavItem">Incomplete Glossary of Time</div>' : ''}
     `;
-    let isMobile = window.innerWidth < 768; // Mobile detection
+    
+    let aboutIsOpen = false;
+    let suggestIsOpen = false;
 
     let mainContainer = document.querySelector(".container");
 
-    if (isMobile) {
-        
-        mainContainer.appendChild(aboutEntry);
-        aboutEntry.style.top = `${-aboutEntry.offsetHeight + 48}px`;
-        aboutEntry.addEventListener("click", () => {
-            aboutEntry.style.top = "0";
-        });
-        
-    } else {
-        aboutEntry.classList.add("entry");
-        entriesContainer.appendChild(aboutEntry);
+    function appendAbout(isMobile) {
+        if (isMobile) {
+            mainContainer.appendChild(aboutEntry);
+            
+            aboutEntry.style.top = `${-aboutEntry.offsetHeight + 48}px`;
+
+            aboutEntry.addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevent click from propagating to the document
+                if (!aboutIsOpen) {
+                    aboutEntry.style.top = "0";
+                    aboutIsOpen = !aboutIsOpen;
+                } 
+               
+            });
+
+            document.addEventListener("click", (event) => {
+                if (aboutIsOpen && !aboutEntry.contains(event.target)) {
+                aboutEntry.style.top = `${-aboutEntry.offsetHeight + 48}px`;
+                aboutIsOpen = false;
+                }
+            });
+
+        } else {
+            aboutEntry.classList.add("entry");
+            entriesContainer.appendChild(aboutEntry);
+        }
     }
+
+    appendAbout(isMobile);
+
+
+   
     
     document.getElementById("clock").innerHTML = getNaturalLanguageTime();
 
@@ -101,36 +125,89 @@ document.addEventListener("DOMContentLoaded", async () => {
     const suggestEntry = document.createElement("div");
     suggestEntry.classList.add("suggest");
     suggestEntry.innerHTML = `
+       ${isMobile ? '<div class="mobileNavItem">Suggest a word</div>' : ''}
        <div class="suggest-content">
             <p class="suggest-text">
                 Words can render new realities and expand our perception of time. Share your experiences—specific or vague—that might otherwise fall through the cracks of conventional language.
             </p>
-            <form class="suggest-form">
+            <form class="suggest-form" id="suggestForm">
                 <label for="name">name</label>
-                <input type="text" id="name" name="name" />
+                <input type="text" id="name" name="name" required />
 
                 <label for="email">email</label>
-                <input type="email" id="email" name="email" />
+                <input type="email" id="email" name="email" required />
 
                 <label for="word-details">words about the word</label>
-                <textarea id="word-details" name="word-details"></textarea>
+                <textarea id="word-details" name="word-details" required></textarea>
 
                 <button type="submit">Submit</button>
             </form>
         </div>
     `;
 
-    if (isMobile) {
-        mainContainer.appendChild(suggestEntry);
-        suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 48}px`;
-        suggestEntry.addEventListener("click", () => {
-            suggestEntry.style.bottom = `${0}px`;
-        });
-        // console.log(suggestEntry.offsetHeight);
-    } else {
-        suggestEntry.classList.add("entry");
-        entriesContainer.appendChild(suggestEntry);
+
+    function appendSuggest(isMobile) {
+        if (isMobile) {
+
+            mainContainer.appendChild(suggestEntry);
+            suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 64}px`;
+    
+            suggestEntry.addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevent click from propagating to the document
+                if(!suggestIsOpen) {
+                // suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 48}px`;
+                    suggestEntry.style.bottom = "0";
+                    suggestIsOpen = true;
+                }
+               
+            });
+    
+            document.addEventListener("click", (event) => {
+                if (suggestIsOpen && !suggestEntry.contains(event.target)) {
+                suggestEntry.style.bottom = `${-suggestEntry.offsetHeight + 64}px`;
+                suggestIsOpen = false;
+                }
+            });
+    
+            // console.log(suggestEntry.offsetHeight);
+        } else {
+            suggestEntry.classList.add("entry");
+            entriesContainer.appendChild(suggestEntry);
+        }
     }
+
+
+    
+
+    appendSuggest(isMobile)
+
+    document.getElementById("suggestForm").addEventListener("submit", async (event) => {
+        event.preventDefault(); // Prevent the default form submission
+    
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+    
+        try {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbyu5cg6LWBtt4PXLLRXhSjN1VgORzVAxcOfXfFhnSI7izT8rzdWANkKtlSAaZHBW9k81Q/exec", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" },
+            });
+    
+            const result = await response.json();
+            if (result.status === "success") {
+                alert("Form submitted successfully!");
+            } else {
+                alert("Failed to submit form.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred while submitting the form.");
+        }
+    });
+
+
+    
     
     hideLoadingScreen();
 
@@ -269,5 +346,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
+
+
 
 

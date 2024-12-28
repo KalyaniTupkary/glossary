@@ -142,7 +142,7 @@ body.disableHover .entry:hover {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 8px 24px;
     color: black;
     border-bottom: none;
     flex-grow: 0;
@@ -285,7 +285,7 @@ body.disableHover .entry:hover {
     }
 
     .suggest, .about > * {
-        width:90%;
+        width:100%;
     }
     
 }
@@ -295,7 +295,7 @@ body.disableHover .entry:hover {
     position: fixed;
     z-index: 9999;
     width:100vw;
-    /* height: 400px; */
+
     left: 0;
     background:var(--light);
     border: 1.5px solid black;
@@ -307,7 +307,7 @@ body.disableHover .entry:hover {
     position: fixed;
     z-index: 9999;
     width:100vw;
-    /* height: 400px; */
+
     left: 0;
     /* background: red; */
     border: 1.5px solid black;
@@ -315,18 +315,35 @@ body.disableHover .entry:hover {
     transition: all 0.3s ease;
 }
 
-.about {
+.about,.suggest {
     display: flex;
-    padding: 10%;
+    padding: 32px;
 }
 
-.suggest {
-    display: flex;
-    padding: 10%;
+.about.open {
+    top:0;
 }
+
+.about .mobileNavItem {
+    bottom: 0;
+}
+
+.suggest .mobileNavItem {
+    top: 0;
+}
+
+.mobileNavItem{
+    height: 48px;
+    position: absolute;
+    left: 0;
+    display: flex;
+    padding: 0 32px;
+    align-items: center;
+}
+
+
 
 .suggest-content {
-
     text-align: left;
     display: flex;
     flex-direction: column;
