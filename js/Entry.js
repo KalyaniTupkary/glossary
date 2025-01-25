@@ -1,4 +1,6 @@
-class Entry {
+import { calculatePosition } from './calculatePosition.js';
+
+export class Entry {
     constructor(element, index, padding, entries, changeEntry) {
         this.element = element;
         this.index = index;
@@ -25,7 +27,6 @@ class Entry {
     updatePosition(currentIndex = null) {
         const isMobile = window.innerWidth < 768; // Mobile detection
         const position = calculatePosition(this.index, currentIndex, isMobile, this.padding, this.element.offsetWidth);
-        console.log('position', position)
         this.element.style.left = position;
         this.element.style.zIndex = 100 - this.index;
 
@@ -40,18 +41,21 @@ class Entry {
     }
 
     addClickListener() {
-        this.element.addEventListener("click", () => {
+        this.element.addEventListener("click", (event) => {
+            const stamp = this.element.querySelector("#stamp");
+    
+            // Check if the clicked element is the #stamp
+            if (event.target === stamp) {
+                console.log("Stamp clicked, triggering random entry");
+                // this.changeEntry(getRandomEntryIndex(this.entries.length));
+                return;  // Prevent further processing
+            }
+    
+            // If this entry isn't current, handle the click normally
             if (!this.element.classList.contains("current")) {
-                currentIndex = this.index;
-
-                // Update positions of all entries
                 this.entries.forEach(entry => entry.isClicked = false);
                 this.isClicked = true;
-
-                // Update the current positions and classes
-
-                this.changeEntry(this.index)
-    
+                this.changeEntry(this.index);
             }
         });
     }

@@ -1,4 +1,4 @@
-function calculatePosition(index, currentIndex, isMobile, padding, elementWidth) {
+export function calculatePosition(index, currentIndex, isMobile, padding, elementWidth) {
     if (currentIndex === null) return "0px";
 
     if (index === currentIndex) {

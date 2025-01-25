@@ -1,4 +1,5 @@
-function getNaturalLanguageTime() {
+// Function to get the natural language representation of the current time
+export function getNaturalLanguageTime() {
     const date = new Date();
 
     // Determine the time of day
@@ -20,6 +21,7 @@ function getNaturalLanguageTime() {
     return `${timeOfDay}<br>the ${dayInWords}`;
 }
 
+// Function to convert numbers to words with ordinals
 function numberToWordsWithOrdinal(num) {
     const words = [
         "zero", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
@@ -43,14 +45,20 @@ function numberToWordsWithOrdinal(num) {
     }
 }
 
-// document.addEventListener("DOMContentLoaded", () => {
-//     const clockElement = document.getElementById("clock");
+// Function to add the clock to the page and update it
+export function addClock() {
+    const clockElement = document.getElementById("clock");
 
-//     const updateClock = () => {
-//         clockElement.innerHTML = getNaturalLanguageTime(); // Use innerHTML to handle the <br>
-//     };
+    if (!clockElement) {
+        console.error("Clock element not found");
+        return;
+    }
 
-//     // Update clock every second
-//     updateClock();
-    
-// });
+    const updateClock = () => {
+        clockElement.innerHTML = getNaturalLanguageTime(); // Use innerHTML to handle the <br>
+    };
+
+    // Update the clock immediately and then every second
+    updateClock();
+    setInterval(updateClock, 1000);
+}
