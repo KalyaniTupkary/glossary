@@ -409,7 +409,7 @@ body.disableHover .entry:hover {
 
     .textEntry, 
     .entry {
-        width: calc(100vw - 24px);
+        width: calc(100vw - 48px);
     }
 
     .suggest, 
