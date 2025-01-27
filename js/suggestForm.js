@@ -23,11 +23,11 @@ export function initializeFormHandler(formSelector, successCallback) {
             
                 <div class="form-group">
                     <label for="name">name</label>
-                    <input type="text" id="name" name="name" required />
+                    <input type="text" id="name" name="name"  />
                 </div>
                 <div class="form-group">
                     <label for="email">email</label>
-                    <input type="email" id="email" name="email" required />
+                    <input type="email" id="email" name="email"  />
                 </div>
                 <div class="form-group">
                     <label for="wordDetails">words about the word</label>

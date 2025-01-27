@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Initialize components
     initializeMobileNav();
     initializeLogoAnimation();
-    addClock();
+    
 
     const entriesContainer = document.querySelector(".entries");
 
@@ -36,12 +36,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         appendAbout(entriesContainer);
     } else {
         appendAbout(document.querySelector(".container"));
+       
     }
+
 
     
     const dataset = await fetchEntries();
-    console.log('fetched dataset:', dataset);
-    document.getElementById("clock").innerHTML = getNaturalLanguageTime();
+    
 
     dataset.forEach((data) => {
         const entryElement = document.createElement("div");
@@ -63,16 +64,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         appendSuggest(document.querySelector(".container"));
     }
 
+    
+
     // Function to initialize the form
     function checkAndInitializeForm() {
         const form = document.querySelector("#suggestForm");
         if (form) {
             initializeFormHandler("#suggestForm", () => {
-                console.log("Form submitted successfully!");
             });
             observer.disconnect(); // Stop observing once initialized
         }
     }
+
+  
+
 
     // Create MutationObserver to watch for form being added to the DOM
     const observer = new MutationObserver(() => {
@@ -92,12 +97,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const entryCount = allEntries.length;
     let padding = window.innerWidth * 0.25 / (entryCount - 1);
 
+
+
     function updateProgressBar() {
         const progressBar = document.querySelector("#progress .bar");
         const progressPercentage = (currentIndex / entryCount) * 100;
         progressBar.style.width = `${100 / entryCount}%`;
         progressBar.style.left = `${progressPercentage}%`;
     }
+    
 
     function changeEntry(targetIndex) {
         entryObjects.forEach((entry) => entry.element.classList.add("animating"));
@@ -128,6 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.addEventListener("resize", () => {
         padding = window.innerWidth * 0.25 / entryCount;
+       
         changeEntry(currentIndex);
     });
 
@@ -141,51 +150,119 @@ document.addEventListener("DOMContentLoaded", async () => {
         changeEntry(currentIndex);
     });
 
+    document.getElementById("logo").addEventListener("click", () => {
+        currentIndex = 0
+        changeEntry(currentIndex);
+    });
+
+   
+
+
+    document.addEventListener("keydown", (event) => {
+        if (isAnimating) return;
+
+        if (event.key === "ArrowLeft" && currentIndex > 0) {
+            currentIndex -= 1;
+            // isAnimating = true;
+            changeEntry(currentIndex);
+            setTimeout(() => {
+                isAnimating = false;
+            }, 800);
+        } else if (event.key === "ArrowRight" && currentIndex < entryCount - 1) {
+            currentIndex += 1;
+            isAnimating = true;
+            changeEntry(currentIndex);
+            setTimeout(() => {
+                isAnimating = false;
+            }, 800);
+        }
+    });
 
 
     let isAnimating = false;
-    const SCROLL_THRESHOLD = 10;
+    let SCROLL_THRESHOLD = 10;
 
     function handleScroll(event) {
         if (isAnimating) return;
-
-        const deltaY = Math.abs(event.deltaY);
-        const deltaX = Math.abs(event.deltaX);
-
+    
+        if (document.querySelector('.mobileNavItem.open')) {
+            return;
+        }
+    
+        const isTouchEvent = event.type === "touchmove";
+    
+        let deltaY, deltaX;
+    
+        if (isTouchEvent) {
+            // For touch events, use manually calculated delta values
+            deltaY = -Math.abs(event.deltaY || 0);
+            deltaX = -Math.abs(event.deltaX || 0);
+        } else {
+            // For mouse wheel events, use event properties
+            deltaY = Math.abs(event.deltaY);
+            deltaX = Math.abs(event.deltaX);
+        }
+    
         if (deltaY < SCROLL_THRESHOLD && deltaX < SCROLL_THRESHOLD) {
             return;
         }
-
+    
         const direction = deltaX > deltaY
             ? (event.deltaX > 0 ? 1 : -1)
             : (event.deltaY > 0 ? 1 : -1);
-
-        if ((direction === 1 && currentIndex < entryCount - 1) || (direction === -1 && currentIndex > 0)) {
-            currentIndex += direction;
+    
+        // Reverse direction for touch events
+        const finalDirection = isTouchEvent ? -direction : direction;
+    
+        if ((finalDirection === 1 && currentIndex < entryCount - 1) || (finalDirection === -1 && currentIndex > 0)) {
+            currentIndex += finalDirection;
             isAnimating = true;
             changeEntry(currentIndex);
-
+    
             setTimeout(() => {
                 isAnimating = false;
             }, 800);
         }
     }
 
+    
+    
+    // Add event listeners
     document.addEventListener("wheel", handleScroll, { passive: false });
 
-    let touchStartY = 0;
-    document.addEventListener("touchstart", (event) => {
-        touchStartY = event.touches[0].clientY;
-    });
-
-    document.addEventListener("touchmove", (event) => {
-        const touchEndY = event.touches[0].clientY;
-        const delta = touchStartY - touchEndY;
-
-        if (Math.abs(delta) > 50) {
-            handleScroll({ deltaY: delta });
-        }
-    });
+    function initializeSwipeHandler() {
+        const touchArea = document.body; // Or specify a specific container element
+        const hammer = new Hammer(touchArea);
+    
+        hammer.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+    
+        hammer.on("swipeleft", () => {
+            console.log("swipe left");
+            if (currentIndex < entryCount - 1) {
+                currentIndex++;
+                changeEntry(currentIndex);
+            }
+        });
+    
+        hammer.on("swiperight", () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                changeEntry(currentIndex);
+            }
+        });
+    
+        console.log("Swipe gestures enabled with Hammer.js");
+    }
+    
+    // Check for touch support and initialize Hammer.js if applicable
+    if ('ontouchstart' in window || navigator.maxTouchPoints) {
+        initializeSwipeHandler();
+        console.log("Touch support detected");
+    }
+    
+  
+    
+   
 });
 
 

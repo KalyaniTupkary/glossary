@@ -1,3 +1,5 @@
+import { addClock } from "./clock.js";
+
 export function hideLoadingScreen(loaderTimeout) {
     const loadingScreen = document.getElementById("load");
     setTimeout(() => {
@@ -21,7 +23,6 @@ export function appendAbout(entriesContainer) {
     aboutEntry.innerHTML = `
         <p class="intro">
             <img id="stamp" src="images/wordbyword.png" />
-            <span id="clock"></span> 
             Dear reader,<br><br>
             More than what we can do with words, this glossary uncovers what words can do with us. 
             These words give form to the nuanced phenomena we encounter—leaky sensations, feelings, 
@@ -38,15 +39,20 @@ export function appendAbout(entriesContainer) {
             Peruse it slowly,<br>
             Kalyani
             <br><br>
-            P.S. Project by yours truly, with the website brought to life by Jon Packles.
+            <span class="ps">P.S.</span> Project by yours truly, with the website brought to life by Jon Packles.
         </p>
     `;
+
+
+    
 
     if (isMobile) {
         aboutEntry.classList.add("mNavContent");
         document.querySelector("#mNavAbout").appendChild(aboutEntry);
     } else {
         entriesContainer.prepend(aboutEntry);
+        addClock(aboutEntry.children[0]);
+
     }
 }
 
@@ -67,17 +73,18 @@ export function appendSuggest(entriesContainer) {
             <form class="suggest-form" id="suggestForm">
                 <div class="form-group">
                     <label for="name">name</label>
-                    <input type="text" id="name" name="name" required />
+                    <input type="text" id="name" name="name" />
                 </div>
                 <div class="form-group">
                     <label for="email">email</label>
-                    <input type="email" id="email" name="email" required />
+                    <input type="email" id="email" name="email" />
                 </div>
                 <div class="form-group">
                     <label for="wordDetails">words about the word</label>
                     <textarea id="word-details" name="wordDetails" required></textarea>
                 </div>
                 <button type="submit">Submit</button>
+    
             </form>
         </div>
     `;

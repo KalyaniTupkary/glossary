@@ -46,8 +46,6 @@ export class Entry {
     
             // Check if the clicked element is the #stamp
             if (event.target === stamp) {
-                console.log("Stamp clicked, triggering random entry");
-                // this.changeEntry(getRandomEntryIndex(this.entries.length));
                 return;  // Prevent further processing
             }
     

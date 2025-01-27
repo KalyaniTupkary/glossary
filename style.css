@@ -12,6 +12,8 @@
     --lightish: #dedbd5;
     --dark: black;
     --red: #CF0707;
+
+    
 }
 
 body, html {
@@ -43,8 +45,6 @@ h1, h2, h3 {
     overflow-y: hidden;
 }
 
-
-
 .word {
     font-size: var(--font-title);
     font-weight: var(--font-title-weight);
@@ -53,7 +53,6 @@ h1, h2, h3 {
 .definition {
     font-size: var(--font-body);
 }
-
 
 .word-type {
     color: var(--red);
@@ -66,10 +65,13 @@ h1, h2, h3 {
     width: 72%;
 }
 
-.entry:not(.current):hover {
-    background-color: black;
-    cursor: pointer;
+@media screen and (min-width: 1151px) {
+    .entry:not(.current):hover {
+        background-color: black;
+        cursor: pointer;
+    }
 }
+
 
 .entry.animating:hover {
     background-color: var(--light);
@@ -144,11 +146,11 @@ body.disableHover .entry:hover {
     background-color: black;
     width: 20px;
     position: absolute;
-    transform: translateX(-50%);
     left: 0;
     cursor: pointer;
     transition: left 0.5s ease;
 }
+
 
 .disableTransition {
     transition: none !important;
@@ -166,17 +168,17 @@ body.disableHover .entry:hover {
 }
 
 #clock {
-    position: absolute;
+
     font-style: italic;
-    top: -4.5em;
-    left: -150px;
+   
     text-align: right;
+    width: auto;
 }
 
 
 #stamp {
     position: absolute;
-    height: 120px;
+    width: 12%;
     top: 24px;
     right: 24px;
     transform: translateX(50%);
@@ -225,21 +227,31 @@ body.disableHover .entry:hover {
     background: var(--light);
     padding: 40px;
     border: 1.5px solid black;
-    width: 75vw;
     height: 100%;
 }
 
+
+
 .entry.suggest > *, .entry.about > * {
-    width: 60%;
+    width: 70%;
+    
 }
+
 
 
 
 
 .about, .suggest {
     display: flex;
-    padding: 32px;
+    padding: 32px 32px; 
     font-size: var(--font-body);
+   
+}
+
+@media screen and (max-width: 1150px) {
+    .about, .suggest {
+        font-size: var(--font-body-smaller);
+    }
 }
 
 .about.open {
@@ -258,12 +270,16 @@ body.disableHover .entry:hover {
     bottom: 0;
 }
 
+.ps {
+    font-style: italic;
+}
+
 .suggest .mobileNavItem {
     top: 0;
 }
 
 .mobileNavItem {
-    /* height: 48px; */
+    height: 0;
 
 }
 
@@ -315,6 +331,13 @@ body.disableHover .entry:hover {
     font-family: 'EB Garamond', serif;
     background: none;
     resize: none;
+    
+}
+
+.suggest-form input:focus, .suggest-form textarea:focus{
+    outline: none;
+    border: 1.5px solid var(--red);
+
 }
 
 .suggest-form textarea {
@@ -325,15 +348,18 @@ body.disableHover .entry:hover {
     padding: 10px;
     font-size: 1rem;
     font-family: 'EB Garamond', serif;
+    color: var(--dark);
+    font-weight: 400;
     border: 1.5px solid black;
     background: none;
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
-.suggest-content button:hover {
+.suggest-content button:hover, .suggest-content button:focus {
     background: black;
     color: var(--light);
+    outline: none;
 }
 
 #load {
@@ -397,11 +423,16 @@ body.disableHover .entry:hover {
     }
 
     .definition {
-        font-size: var(--font-body-mobile)
+        font-size: var(--font-body-mobile);
     }
 
     .entry-content {
         width: 84%;
+    }
+
+    .about, .suggest, .suggest * {
+        padding: 0;
+        font-size: var(--font-body-mobile)
     }
 
 
@@ -412,12 +443,30 @@ body.disableHover .entry:hover {
     .mobileNavItem .mNavContent {
         width: 100%;
     }
+
+    #mobileOverlay {
+        visibility: hidden;
+        opacity: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 550;
+        transition: opacity 0.5s ease;
+    }
+
+    #mobileOverlay.showOverlay {
+        visibility: visible;
+        opacity: 0;
+    }
+
 }
 
 .mobileNavItem {
     position: fixed;
-    height: 45px;
-    width: 100vw;
+    width: 100%;
     z-index: 600;
     background: var(--light);
     font-size: var(--font-body-mobile);
@@ -426,11 +475,14 @@ body.disableHover .entry:hover {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: all 0.3s ease;
-    padding: 24px 32px;
+    transition: all 0.5s ease;
+    padding: 32px 32px;
     cursor: pointer;
     overflow-y: hidden;
-   
+}
+
+.mobileNavItem p {
+    margin: 0;
 }
 
 @media (min-width: 769px) {
@@ -442,7 +494,6 @@ body.disableHover .entry:hover {
 .mobileNavItem h3 {
     font-size: var(--font-body-mobile);
 }
-
 
 
 #mNavAbout {
@@ -457,22 +508,29 @@ body.disableHover .entry:hover {
 
 .mobileNavItem .mNavContent {
     display: none;
+    opacity: 0;
 }
 
 .mobileNavItem.open .mNavContent {
     display: block;
     opacity: 1;
+
 }
 
 .mobileNavItem.open {
     z-index: 700;
-    height: 100vh;
+    height: 80%;
     cursor: default;
     justify-content: flex-start;
+    overflow-y: scroll;
 }
 
 .mobileNavItem.open h3 {
-    display: none;
+    /* display: none; */
+}
+
+.mNavContent {
+    margin: 24px 0;
 }
 
 .mobileNavItem.open .navContent {
@@ -486,7 +544,7 @@ body.disableHover .entry:hover {
 
 .mobileNavTitle {
     display: flex;
-    height: 48px;
+    /* height: 48px; */
     gap: 16px;
     flex-direction: row;
     width: 100%;
