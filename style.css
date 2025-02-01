@@ -35,7 +35,7 @@ h1, h2, h3 {
 .entry {
     box-sizing: border-box;
     width: 75vw;
-    height: 100%;
+    height: calc(100% - 24px);
     border: 1.5px solid black;
     flex-shrink: 0;
     display: flex;
@@ -151,8 +151,12 @@ body.disableHover .entry:hover {
     width: 20px;
     position: absolute;
     left: 0;
-    cursor: pointer;
+    cursor: grab;
     transition: left 0.5s ease;
+}
+
+#progress.dragging, #progress.dragging .bar {
+    cursor: grabbing;
 }
 
 
@@ -428,7 +432,8 @@ body.disableHover .entry:hover {
 
     .textEntry, 
     .entry {
-        width: calc(100vw - 25px);
+        width: calc(100vw - 48px);
+        height: 100%;
     }
 
     .suggest, 

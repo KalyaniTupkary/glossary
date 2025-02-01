@@ -1,36 +1,22 @@
 import { initializeFormHandler } from './suggestForm.js';
-import { addClock, getNaturalLanguageTime } from './clock.js';
 import { fetchEntries } from './entryDataHandler.js';
 import { Entry } from './Entry.js';
 import { initializeMobileNav } from './mobileNav.js';
 import { initializeLogoAnimation } from './logo.js';
-import { hideLoadingScreen, appendAbout, appendSuggest, isMobileDevice } from './uiHandler.js';
+import { updateProgressBar } from './progressBar.js';
+import { hideLoadingScreen, appendAbout, appendSuggest, isMobileDevice, updateNavHightlight } from './uiHandler.js';
 
 let currentIndex = 0;
 let loaderTimeout = 1000;
 
 document.addEventListener("DOMContentLoaded", async () => {
     const loadingScreen = document.getElementById("load");
-
     // Initialize components
     initializeMobileNav();
     initializeLogoAnimation();
     
-
     const entriesContainer = document.querySelector(".entries");
 
-    function updateNavHightlight(el){
-        if(el.classList.contains('about')){
-            document.getElementById('navSuggest').classList.remove('active');
-            document.getElementById('navAbout').classList.add('active');
-        } else if(el.classList.contains('suggest')){
-            document.getElementById('navAbout').classList.remove('active');
-            document.getElementById('navSuggest').classList.add('active');
-        } else {
-            document.getElementById('navAbout').classList.remove('active');
-            document.getElementById('navSuggest').classList.remove('active');
-        }
-    }
 
     if(!isMobileDevice()){
         appendAbout(entriesContainer);
@@ -39,11 +25,8 @@ document.addEventListener("DOMContentLoaded", async () => {
        
     }
 
-
-    
     const dataset = await fetchEntries();
     
-
     dataset.forEach((data) => {
         const entryElement = document.createElement("div");
         entryElement.classList.add("entry");
@@ -64,9 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         appendSuggest(document.querySelector(".container"));
     }
 
-    
-
-    // Function to initialize the form
     function checkAndInitializeForm() {
         const form = document.querySelector("#suggestForm");
         if (form) {
@@ -75,21 +55,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             observer.disconnect(); // Stop observing once initialized
         }
     }
-
-  
-
-
-    // Create MutationObserver to watch for form being added to the DOM
     const observer = new MutationObserver(() => {
         checkAndInitializeForm();
     });
 
-    // Start observing the entire document for added elements
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // Call initially in case the form is already in the DOM
     checkAndInitializeForm();
-
 
     hideLoadingScreen(1000);
 
@@ -97,16 +69,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const entryCount = allEntries.length;
     let padding = window.innerWidth * 0.25 / (entryCount - 1);
 
-    const progressBar = document.querySelector("#progress .bar");
-    let isDragging = false;
-
-   
 
     function changeEntry(targetIndex) {
         entryObjects.forEach((entry) => entry.element.classList.add("animating"));
         currentIndex = targetIndex;
         entryObjects.forEach(entry => entry.updatePosition(currentIndex));
-        updateProgressBar();
+        updateProgressBar(currentIndex, entryCount);
         
         updateNavHightlight(entryObjects[currentIndex].element);
 
@@ -120,7 +88,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
 
     entryObjects.forEach(entry => entry.entries = entryObjects);
-
     let randomIndex = Math.floor(Math.random() * (entryCount - 2)) + 1;
     changeEntry(randomIndex);
 
@@ -131,7 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.addEventListener("resize", () => {
         padding = window.innerWidth * 0.25 / entryCount;
-       
         changeEntry(currentIndex);
     });
 
@@ -149,8 +115,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentIndex = 0
         changeEntry(currentIndex);
     });
-
-   
 
 
     document.addEventListener("keydown", (event) => {
@@ -173,16 +137,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    function updateProgressBar() {
-        
-        const progressPercentage = (currentIndex / entryCount) * 100;
-        progressBar.style.width = `${100 / entryCount}%`;
-        progressBar.style.left = `${progressPercentage}%`;
-    }
-    
+
 
     let isAnimating = false;
     let SCROLL_THRESHOLD = 10;
+
+
+    // interaction handlers
 
     function handleScroll(event) {
         if (isAnimating) return;
@@ -228,7 +189,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     
-    
     // Add event listeners
     document.addEventListener("wheel", handleScroll, { passive: false });
 
@@ -239,7 +199,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         hammer.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
     
         hammer.on("swipeleft", () => {
-            console.log("swipe left");
             if (currentIndex < entryCount - 1) {
                 currentIndex++;
                 changeEntry(currentIndex);
@@ -253,18 +212,57 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     
-        console.log("Swipe gestures enabled with Hammer.js");
     }
     
     // Check for touch support and initialize Hammer.js if applicable
     if ('ontouchstart' in window || navigator.maxTouchPoints) {
         initializeSwipeHandler();
-        console.log("Touch support detected");
     }
+
+
+const progressBar = document.getElementById('progress');
+
+let isDragging = false;
+
+progressBar.addEventListener("mousedown", (e) => startDrag(e));
+progressBar.addEventListener("touchstart", (e) => startDrag(e.touches[0]));
+
+document.addEventListener("mousemove", (e) => drag(e));
+document.addEventListener("touchmove", (e) => drag(e.touches[0]));
+
+document.addEventListener("mouseup", stopDrag);
+document.addEventListener("touchend", stopDrag);
+
+function startDrag(event) {
+    isDragging = true;
+    progressBar.classList.add("dragging");
+    updateEntryFromProgress(event);
+}
+
+function drag(event) {
+    console.log(isDragging);
+    if (!isDragging) return;
+    updateEntryFromProgress(event);
+}
+
+function stopDrag() {
+    isDragging = false;
+    progressBar.classList.remove("dragging");
+}
+
+function updateEntryFromProgress(event) {
+    const rect = progressBar.getBoundingClientRect();
+    let offsetX = event.clientX - rect.left; // Mouse position relative to progress bar
+    let progress = offsetX / rect.width; // Convert to percentage
     
-  
+    progress = Math.max(0, Math.min(progress, 1)); // Clamp between 0 and 1
+    currentIndex = Math.round(progress * (entryCount - 1)); // Convert to index
+
+    changeEntry(currentIndex);
+    updateProgressBar();
+}
+
     
-   
 });
 
 

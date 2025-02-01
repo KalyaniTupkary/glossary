@@ -43,9 +43,6 @@ export function appendAbout(entriesContainer) {
         </p>
     `;
 
-
-    
-
     if (isMobile) {
         aboutEntry.classList.add("mNavContent");
         document.querySelector("#mNavAbout").appendChild(aboutEntry);
@@ -97,3 +94,17 @@ export function appendSuggest(entriesContainer) {
         entriesContainer.appendChild(suggestEntry);
     }
 }
+
+
+export  function updateNavHightlight(el){
+        if(el.classList.contains('about')){
+            document.getElementById('navSuggest').classList.remove('active');
+            document.getElementById('navAbout').classList.add('active');
+        } else if(el.classList.contains('suggest')){
+            document.getElementById('navAbout').classList.remove('active');
+            document.getElementById('navSuggest').classList.add('active');
+        } else {
+            document.getElementById('navAbout').classList.remove('active');
+            document.getElementById('navSuggest').classList.remove('active');
+        }
+    }
