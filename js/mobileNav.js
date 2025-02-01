@@ -18,6 +18,16 @@ export function initializeMobileNav() {
 function createNavItem(text, id){
     let navItem = document.createElement('div');
     let navHeader = document.createElement('h3');
+    let closeIcon = document.createElement('img');
+    closeIcon.src = '../images/close.svg';
+    closeIcon.alt = 'Close';
+    closeIcon.classList.add('closeIcon');
+    closeIcon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        closeMobileNav();
+    });
+    
+    navItem.appendChild(closeIcon);
     navItem.appendChild(navHeader);
     navItem.id = id;
     navHeader.textContent = text;

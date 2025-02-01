@@ -18,7 +18,7 @@ export function getNaturalLanguageTime() {
     const dayInWords = numberToWordsWithOrdinal(day);
 
     // Add line break before the date
-    return `${timeOfDay} the ${dayInWords} <br><br>`;
+    return `${timeOfDay} the ${dayInWords}`;
 }
 
 // Function to convert numbers to words with ordinals
@@ -46,11 +46,17 @@ function numberToWordsWithOrdinal(num) {
 }
 
 // Function to add the clock to the page and update it
-export function addClock(parentElement) {
+export function addClock(parentElement, isMobile) {
+
 
     const clockElement = document.createElement("span");
     clockElement.id = "clock";
-    parentElement.insertBefore(clockElement, parentElement.firstChild);
+    if(isMobile){
+        parentElement.append(clockElement);
+    } else {
+        parentElement.insertBefore(clockElement, parentElement.firstChild);
+    }
+    
 
     if (!clockElement) {
         console.error("Clock element not found");
@@ -58,7 +64,11 @@ export function addClock(parentElement) {
     }
 
     const updateClock = () => {
-        clockElement.innerHTML = getNaturalLanguageTime(); // Use innerHTML to handle the <br>
+        let timeString = getNaturalLanguageTime();
+        if (!isMobile) {
+            timeString = timeString.replace(" of", " of<br>");
+        }
+        clockElement.innerHTML = timeString; // Use innerHTML to handle the <br>
     };
 
     // Update the clock immediately and then every second

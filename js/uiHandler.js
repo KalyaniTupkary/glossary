@@ -39,7 +39,7 @@ export function appendAbout(entriesContainer) {
             Peruse it slowly,<br>
             Kalyani
             <br><br>
-            <span class="ps">P.S.</span> Project by yours truly, with the website brought to life by Jon Packles.
+            <span class="ps">P.S. Project by yours truly, with the website brought to life by Jon Packles.</span>
         </p>
     `;
 
@@ -49,9 +49,10 @@ export function appendAbout(entriesContainer) {
     if (isMobile) {
         aboutEntry.classList.add("mNavContent");
         document.querySelector("#mNavAbout").appendChild(aboutEntry);
+        addClock(aboutEntry.children[0], true);
     } else {
         entriesContainer.prepend(aboutEntry);
-        addClock(aboutEntry.children[0]);
+        addClock(aboutEntry.children[0], false);
 
     }
 }

@@ -3,8 +3,8 @@
     --font-title: 3.125rem; /* 50px */
     --font-title-weight: 500;
     --font-body-small: 0.9375rem; /* 15px */
-    --font-body-mobile: 0.83rem; /* 13px */
-    --font-title-mobile: 1.5rem; /* 24px */
+    --font-body-mobile: 1rem; /* 13px */
+    --font-title-mobile: 2rem; /* 24px */
 
     
 
@@ -22,6 +22,9 @@ body, html {
     padding: 0;
     scrollbar-width: none; /* Firefox */
     overflow: hidden;
+    font-smooth: always; /* Non-standard, works in some browsers */
+  -webkit-font-smoothing: antialiased; /* Makes text thinner in macOS */
+  -moz-osx-font-smoothing: grayscale; /* Similar effect for Firefox */
 }
 
 h1, h2, h3 {
@@ -87,6 +90,7 @@ body.disableHover .entry:hover {
     height: calc(100vh - 94px);
     flex-grow: 1;
     position: relative;
+    box-sizing: border-box;
 }
 
 
@@ -168,11 +172,14 @@ body.disableHover .entry:hover {
 }
 
 #clock {
-
     font-style: italic;
-   
     text-align: right;
     width: auto;
+    display: block;
+    position: relative;
+    left: calc(-100% - 24px);
+    font-size: var(--font-body-small);
+    
 }
 
 
@@ -392,13 +399,25 @@ body.disableHover .entry:hover {
     color: #333;
 }
 
-
-
-
 @media screen and (max-width: 768px) {
     .entries {
         height: 100%;
         background: var(--lightish);
+        border-left: 1.5px solid var(--dark);
+       
+    }
+
+    #clock {
+        display: block;
+        font-style: italic;
+        text-align: left;
+        width: auto;
+        margin-top: 16px;
+        position:inherit;
+    }
+
+    .ps {
+        font-style: normal;
     }
 
     #progress, #progress .bar, 
@@ -409,7 +428,7 @@ body.disableHover .entry:hover {
 
     .textEntry, 
     .entry {
-        width: calc(100vw - 48px);
+        width: calc(100vw - 25px);
     }
 
     .suggest, 
@@ -511,6 +530,7 @@ body.disableHover .entry:hover {
     opacity: 0;
 }
 
+
 .mobileNavItem.open .mNavContent {
     display: block;
     opacity: 1;
@@ -519,10 +539,18 @@ body.disableHover .entry:hover {
 
 .mobileNavItem.open {
     z-index: 700;
-    height: 80%;
+    height: 100%;
     cursor: default;
     justify-content: flex-start;
     overflow-y: scroll;
+}
+
+.closeIcon {
+    width: 14px;
+    height: auto;
+    position: absolute;
+    top: 32px;
+    right: 32px;
 }
 
 .mobileNavItem.open h3 {
@@ -540,6 +568,14 @@ body.disableHover .entry:hover {
 
 .mobileNavItem.suggestM {
     bottom: 0;
+}
+
+.mobileNavItem .closeIcon {
+    opacity: 0;
+}
+
+.mobileNavItem.open .closeIcon {
+    opacity: 1;
 }
 
 .mobileNavTitle {

@@ -97,15 +97,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const entryCount = allEntries.length;
     let padding = window.innerWidth * 0.25 / (entryCount - 1);
 
+    const progressBar = document.querySelector("#progress .bar");
+    let isDragging = false;
 
-
-    function updateProgressBar() {
-        const progressBar = document.querySelector("#progress .bar");
-        const progressPercentage = (currentIndex / entryCount) * 100;
-        progressBar.style.width = `${100 / entryCount}%`;
-        progressBar.style.left = `${progressPercentage}%`;
-    }
-    
+   
 
     function changeEntry(targetIndex) {
         entryObjects.forEach((entry) => entry.element.classList.add("animating"));
@@ -178,6 +173,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
+    function updateProgressBar() {
+        
+        const progressPercentage = (currentIndex / entryCount) * 100;
+        progressBar.style.width = `${100 / entryCount}%`;
+        progressBar.style.left = `${progressPercentage}%`;
+    }
+    
 
     let isAnimating = false;
     let SCROLL_THRESHOLD = 10;
