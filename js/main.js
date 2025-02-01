@@ -236,6 +236,7 @@ document.addEventListener("touchend", stopDrag);
 function startDrag(event) {
     isDragging = true;
     progressBar.classList.add("dragging");
+    document.body.classList.add("dragging");
     updateEntryFromProgress(event);
 }
 
@@ -248,6 +249,7 @@ function drag(event) {
 function stopDrag() {
     isDragging = false;
     progressBar.classList.remove("dragging");
+    document.body.classList.remove("dragging"); 
 }
 
 function updateEntryFromProgress(event) {
