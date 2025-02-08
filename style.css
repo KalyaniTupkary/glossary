@@ -284,6 +284,13 @@ body.disableHover .entry:hover {
     top: 0;
 }
 
+.mobileNavItem .navItemContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    justify-items: center;
+}
+
 .about .mobileNavItem, .suggest .mobileNavItem {
     position: absolute;
     left: 0;
@@ -298,6 +305,7 @@ body.disableHover .entry:hover {
 
 .ps {
     font-style: italic;
+    font-size: var(--font-body-small);
 }
 
 .suggest .mobileNavItem {
@@ -568,9 +576,9 @@ body.disableHover .entry:hover {
 .closeIcon {
     width: 14px;
     height: auto;
-    position: absolute;
-    top: 32px;
-    right: 32px;
+    /* position: absolute; */
+    /* top: 32px;
+    right: 32px; */
 }
 
 .mobileNavItem.open h3 {

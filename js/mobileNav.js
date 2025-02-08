@@ -17,18 +17,26 @@ export function initializeMobileNav() {
 
 function createNavItem(text, id){
     let navItem = document.createElement('div');
+    
+    let navItemContent = document.createElement('div');
+    navItemContent.classList.add('navItemContent');
+    
     let navHeader = document.createElement('h3');
     let closeIcon = document.createElement('img');
+    
     closeIcon.src = '../images/close.svg';
     closeIcon.alt = 'Close';
     closeIcon.classList.add('closeIcon');
+
     closeIcon.addEventListener('click', (event) => {
         event.stopPropagation();
         closeMobileNav();
     });
     
-    navItem.appendChild(closeIcon);
-    navItem.appendChild(navHeader);
+    
+    navItemContent.appendChild(navHeader);
+    navItemContent.appendChild(closeIcon);
+    navItem.appendChild(navItemContent);
     navItem.id = id;
     navHeader.textContent = text;
     navItem.classList.add('mobileNavItem');
