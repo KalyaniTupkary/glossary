@@ -28,18 +28,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dataset = await fetchEntries();
     
     dataset.forEach((data) => {
+
         const entryElement = document.createElement("div");
         entryElement.classList.add("entry");
-        entryElement.innerHTML = `
+
+        entryElement.innerHTML = ` 
+            <div class="safe-area">
+                <div class="related-word"><div>${data.relatedWords[0]}</div></div>
+                <div class="related-word"><div>${data.relatedWords[1]}</div></div>
+                <div class="related-word"><div>${data.relatedWords[2]}</div></div>
+                
+            </div>
             <div class="entry-content">
                 <h2 class="word">
                     ${data.word} <span class="word-type">${data.pos}</span>
                 </h2>
                 <p class="definition">${data.description}</p>
             </div>
+            <div class="safe-area">
+                <div class="related-word"><div>${data.relatedWords[3]}</div></div>
+                <div class="related-word"><div>${data.relatedWords[4]}</div></div>
+            </div>
         `;
         entriesContainer.appendChild(entryElement);
     });
+
+
+    document.querySelectorAll(".related-word div").forEach((relatedWordElement) => {
+        relatedWordElement.addEventListener("click", () => {
+    
+            const clickedWord = relatedWordElement.innerText;
+            const targetEntryIndex = entryObjects.slice(1, -1).findIndex(entry => 
+                entry.element.querySelector(".word").innerText.includes(clickedWord)
+            ) + 1; // Adjust index to account for slicing
+
+            if (targetEntryIndex !== -1) {
+                changeEntry(targetEntryIndex);
+            }
+        });
+    });
+
+
 
     if(!isMobileDevice()){
         appendSuggest(entriesContainer);
@@ -74,6 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         entryObjects.forEach((entry) => entry.element.classList.add("animating"));
         currentIndex = targetIndex;
         entryObjects.forEach(entry => entry.updatePosition(currentIndex));
+        entryObjects.forEach(entry => entry.clearRelatedWords());
         updateProgressBar(currentIndex, entryCount);
         
         updateNavHightlight(entryObjects[currentIndex].element);
@@ -196,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const touchArea = document.body; // Or specify a specific container element
         const hammer = new Hammer(touchArea);
     
-        hammer.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+        hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
     
         hammer.on("swipeleft", () => {
             if (currentIndex < entryCount - 1) {
@@ -211,7 +241,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 changeEntry(currentIndex);
             }
         });
-    
+
+        hammer.on("swipeup", () => {
+            if (currentIndex < entryCount - 1) {
+                currentIndex++;
+                changeEntry(currentIndex);
+            }
+        });
+
+        hammer.on("swipedown", () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                changeEntry(currentIndex);
+            }
+        });
     }
     
     // Check for touch support and initialize Hammer.js if applicable
@@ -241,7 +284,6 @@ function startDrag(event) {
 }
 
 function drag(event) {
-    console.log(isDragging);
     if (!isDragging) return;
     updateEntryFromProgress(event);
 }

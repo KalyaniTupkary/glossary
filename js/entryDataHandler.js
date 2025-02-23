@@ -10,6 +10,7 @@ export async function fetchEntries() {
             word: row[0],
             pos: row[1],
             description: row[2],
+            relatedWords: row[3].split(',').map(word => word.trim()),
         }));
     } catch (error) {
         console.error('Error fetching data:', error);

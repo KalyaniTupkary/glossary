@@ -10,18 +10,52 @@ export class Entry {
         this.isClicked = false;
         this.timerInterval = null; // To track the live timer interval
         this.timeElapsed = 0; // Elapsed time in seconds
-        this.relatedWords = [
-            "word 1",
-            "word 2",
-            "word 3",
-            "word 4",
-            "word 5",
-        ]; // Array of related words
         this.relatedWordsIndex = 0; // Tracks which related word to show next
         this.relatedWordsTimer = null; // Timer for adding related words
+        this.relatedWordElements = [];
+        // this.word = this.element.querySelector(".word").textContent;
+        
+        this.element.querySelectorAll(".related-word").forEach((element, index) => {
+            this.relatedWordElements.push(element);
+        })
 
+        // Reorder relatedWordElements to 0, 3, 1, 4, 2
+        this.relatedWordElements = [
+            this.relatedWordElements[0],
+            this.relatedWordElements[3],
+            this.relatedWordElements[1],
+            this.relatedWordElements[4],
+            this.relatedWordElements[2]
+        ];
+        
         this.updatePosition();
         this.addClickListener();
+    
+        this.startTimer();
+    }
+
+
+    showRelatedWord() {
+        this.relatedWordElements.forEach((element, index) => {
+            if (index === this.relatedWordsIndex) {
+                const randomTranslateY = Math.random() * 60 + 20; // Random value between 20 and 80
+                element.style.transform = `translateY(${randomTranslateY}%)`;
+
+                element.classList.add("visible");
+            }
+        });
+    }
+    
+    
+    clearRelatedWords(){
+
+        const relatedWords = this.element.querySelectorAll(".related-word");
+        if (relatedWords) {
+            relatedWords.forEach(element => {
+            element.classList.remove("visible");
+            });
+        }
+        this.relatedWordsIndex = 0;
     }
 
     updatePosition(currentIndex = null) {
@@ -45,7 +79,7 @@ export class Entry {
             const stamp = this.element.querySelector("#stamp");
     
             // Check if the clicked element is the #stamp
-            if (event.target === stamp) {
+            if (event.target === stamp || event.target.parentNode.classList.contains("related-word")) {
                 return;  // Prevent further processing
             }
     
@@ -59,17 +93,34 @@ export class Entry {
     }
 
     startTimer() {
+
+        // Check if the device is mobile
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+            return;
+        }
         // Reset elapsed time
         this.timeElapsed = 0;
-        this.updateTimeDisplay();
-
-        // Start interval to update the timer every second
-        if (!this.timerInterval) {
-            this.timerInterval = setInterval(() => {
-                this.timeElapsed++;
-                this.updateTimeDisplay();
-            }, 1000);
+        // Clear any existing interval to avoid multiple intervals running
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
         }
+
+        // Start a new interval that calls showRelatedWord every second
+        this.timerInterval = setInterval(() => {
+            this.timeElapsed++;
+            if (this.timeElapsed > 3) {
+                this.showRelatedWord();
+                this.relatedWordsIndex++;
+            }
+            
+            if(this.relatedWordsIndex === this.relatedWordElements.length - 1){
+                this.stopTimer()
+            }
+            
+        }, 1000);
+
+
     }
 
     stopTimer() {
@@ -78,11 +129,4 @@ export class Entry {
         this.timerInterval = null;
     }
 
-    updateTimeDisplay() {
-        // Update the <p class="time"> element inside this entry
-        const timeElement = this.element.querySelector(".time");
-        if (timeElement) {
-            timeElement.textContent = `Time on this entry: ${this.timeElapsed} second${this.timeElapsed !== 1 ? "s" : ""}`;
-        }
-    }
 }

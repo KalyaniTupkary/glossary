@@ -1,35 +1,25 @@
 :root {
-    --font-body: 1.25rem; /* 20px */
-    --font-title: 3.125rem; /* 50px */
+    --font-body: 1.25rem;
+    --font-title: 3.125rem;
     --font-title-weight: 500;
-    --font-body-small: 0.9375rem; /* 15px */
-    --font-body-mobile: 1rem; /* 13px */
-    --font-title-mobile: 2rem; /* 24px */
-
-    
-
+    --font-body-small: 0.9375rem;
+    --font-body-mobile: 1.25rem;
+    --font-title-mobile: 2rem;
     --light: #F9F6EF;
     --lightish: #dedbd5;
     --dark: black;
     --red: #CF0707;
-
-    
 }
-
-
-
-
-
 
 body, html {
     font-family: 'EB Garamond', serif;
     margin: 0;
     padding: 0;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
     overflow: hidden;
-    font-smooth: always; /* Non-standard, works in some browsers */
-  -webkit-font-smoothing: antialiased; /* Makes text thinner in macOS */
-  -moz-osx-font-smoothing: grayscale; /* Similar effect for Firefox */
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3 {
@@ -53,12 +43,14 @@ h1, h2, h3 {
     overflow-y: hidden;
 }
 
+
+
 .entries * {
     pointer-events: auto;
 }
 
 .dragging .entries * {
-    pointer-events: none; /* Disable interactions during drag */
+    pointer-events: none;
     user-select: none;
 }
 
@@ -89,7 +81,6 @@ h1, h2, h3 {
     }
 }
 
-
 .entry.animating:hover {
     background-color: var(--light);
 }
@@ -106,9 +97,6 @@ body.disableHover .entry:hover {
     position: relative;
     box-sizing: border-box;
 }
-
-
-
 
 .container {
     height: 100vh;
@@ -154,7 +142,7 @@ body.disableHover .entry:hover {
     bottom: 0;
     left: 0;
     height: 24px;
-    border-top: 1px solid black;
+    border-top: 1.5px solid black;
     background: var(--light);
     width: 100vw;
     z-index: 9998;
@@ -174,20 +162,42 @@ body.disableHover .entry:hover {
     cursor: grabbing;
 }
 
-
 .disableTransition {
     transition: none !important;
 }
 
+.safe-area {
+    flex-grow: 1;
+    display: flex;
+    justify-items: space-between;
+    align-content: space-between;
+    flex-direction: row;
+    width: 90%;
+    /* background-color: var(--red); */
+}
 
 
 .related-word {
+    /* position:absolute; */
+    flex-grow: 1;
     font-size: var(--font-body-small);
+    height: 100%;
     font-style: italic;
     color: #333;
     pointer-events: none;
     transition: opacity 0.3s ease;
     z-index: 9998;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.related-word>div {
+    cursor: pointer;
+}
+
+.related-word.visible {
+    opacity: 1;
 }
 
 #clock {
@@ -198,9 +208,7 @@ body.disableHover .entry:hover {
     position: relative;
     left: calc(-100% - 24px);
     font-size: var(--font-body-small);
-    
 }
-
 
 #stamp {
     position: absolute;
@@ -212,7 +220,6 @@ body.disableHover .entry:hover {
     animation: rotate 30s linear infinite;
     cursor: pointer;
 }
-
 
 @keyframes rotate {
     from {
@@ -234,8 +241,6 @@ body.disableHover .entry:hover {
     color: var(--red);
 }
 
-
-
 .nav li {
     cursor: pointer;
     font-size: var(--font-body);
@@ -256,28 +261,20 @@ body.disableHover .entry:hover {
     height: 100%;
 }
 
-
+.entry.suggest, .entry.about {
+    justify-content: flex-start;
+}
 
 .entry.suggest > *, .entry.about > * {
     width: 70%;
-    
 }
-
-
-
-
 
 .about, .suggest {
     display: flex;
-    padding: 32px 32px; 
+    padding: 32px 32px;
     font-size: var(--font-body);
-   
-}
-
-@media screen and (max-width: 1150px) {
-    .about, .suggest {
-        font-size: var(--font-body-smaller);
-    }
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 .about.open {
@@ -308,13 +305,16 @@ body.disableHover .entry:hover {
     font-size: var(--font-body-small);
 }
 
+.ps a {
+    color: inherit;
+}
+
 .suggest .mobileNavItem {
     top: 0;
 }
 
 .mobileNavItem {
     height: 0;
-
 }
 
 .suggest-content {
@@ -339,6 +339,8 @@ body.disableHover .entry:hover {
     gap: 16px;
 }
 
+
+
 .thank-you-message {
     font-size: var(--font-body);
     display: flex;
@@ -361,17 +363,15 @@ body.disableHover .entry:hover {
 .suggest-form input, .suggest-form textarea {
     border: 1.5px solid black;
     padding: 10px;
-    font-size: 1rem;
+    font-size: var(--font-body);
     font-family: 'EB Garamond', serif;
     background: none;
     resize: none;
-    
 }
 
-.suggest-form input:focus, .suggest-form textarea:focus{
+.suggest-form input:focus, .suggest-form textarea:focus {
     outline: none;
     border: 1.5px solid var(--red);
-
 }
 
 .suggest-form textarea {
@@ -431,7 +431,6 @@ body.disableHover .entry:hover {
         height: 100%;
         background: var(--lightish);
         border-left: 1.5px solid var(--dark);
-       
     }
 
     #clock {
@@ -440,28 +439,23 @@ body.disableHover .entry:hover {
         text-align: left;
         width: auto;
         margin-top: 16px;
-        position:inherit;
+        position: inherit;
     }
 
     .ps {
         font-style: normal;
     }
 
-    #progress, #progress .bar, 
-    .header, 
-    .nav {
+    #progress, #progress .bar, .header, .nav {
         display: none !important;
     }
 
-    .textEntry, 
-    .entry {
+    .textEntry, .entry {
         width: calc(100vw - 48px);
         height: 100%;
     }
 
-    .suggest, 
-    .about > *, 
-    .entry-content {
+    .suggest, .about > *, .entry-content {
         width: 100%;
     }
 
@@ -479,9 +473,12 @@ body.disableHover .entry:hover {
 
     .about, .suggest, .suggest * {
         padding: 0;
-        font-size: var(--font-body-mobile)
+        font-size: var(--font-body-mobile);
     }
 
+    .suggest input {
+        font-size: var(--font-body-mobile);
+    }
 
     #stamp {
         display: none;
@@ -508,7 +505,6 @@ body.disableHover .entry:hover {
         visibility: visible;
         opacity: 0;
     }
-
 }
 
 .mobileNavItem {
@@ -542,7 +538,6 @@ body.disableHover .entry:hover {
     font-size: var(--font-body-mobile);
 }
 
-
 #mNavAbout {
     top: 0;
     left: 0;
@@ -558,11 +553,9 @@ body.disableHover .entry:hover {
     opacity: 0;
 }
 
-
 .mobileNavItem.open .mNavContent {
     display: block;
     opacity: 1;
-
 }
 
 .mobileNavItem.open {
@@ -576,30 +569,6 @@ body.disableHover .entry:hover {
 .closeIcon {
     width: 14px;
     height: auto;
-    /* position: absolute; */
-    /* top: 32px;
-    right: 32px; */
-}
-
-.mobileNavItem.open h3 {
-    /* display: none; */
-}
-
-.mNavContent {
-    margin: 24px 0;
-}
-
-.mobileNavItem.open .navContent {
-    display: block;
-    opacity: 1;
-}
-
-.mobileNavItem.suggestM {
-    bottom: 0;
-}
-
-.mobileNavItem .closeIcon {
-    opacity: 0;
 }
 
 .mobileNavItem.open .closeIcon {
@@ -608,7 +577,6 @@ body.disableHover .entry:hover {
 
 .mobileNavTitle {
     display: flex;
-    /* height: 48px; */
     gap: 16px;
     flex-direction: row;
     width: 100%;
