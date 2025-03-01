@@ -109,7 +109,7 @@ export class Entry {
         // Start a new interval that calls showRelatedWord every second
         this.timerInterval = setInterval(() => {
             this.timeElapsed++;
-            if (this.timeElapsed > 3) {
+            if (this.timeElapsed > 1) {
                 this.showRelatedWord();
                 this.relatedWordsIndex++;
             }
@@ -118,7 +118,7 @@ export class Entry {
                 this.stopTimer()
             }
             
-        }, 1000);
+        }, 3000);
 
 
     }

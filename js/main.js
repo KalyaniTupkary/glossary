@@ -208,6 +208,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const finalDirection = isTouchEvent ? -direction : direction;
     
         if ((finalDirection === 1 && currentIndex < entryCount - 1) || (finalDirection === -1 && currentIndex > 0)) {
+            
+
             currentIndex += finalDirection;
             isAnimating = true;
             changeEntry(currentIndex);
@@ -244,6 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         hammer.on("swipeup", () => {
             if (currentIndex < entryCount - 1) {
+                
                 currentIndex++;
                 changeEntry(currentIndex);
             }

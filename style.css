@@ -1,8 +1,8 @@
 :root {
-    --font-body: 1.25rem;
-    --font-title: 3.125rem;
+    --font-body: 1.5rem;
+    --font-title: 3.75rem;
     --font-title-weight: 500;
-    --font-body-small: 0.9375rem;
+    --font-body-small: 1.125rem;
     --font-body-mobile: 1.25rem;
     --font-title-mobile: 2rem;
     --light: #F9F6EF;
@@ -137,12 +137,30 @@ body.disableHover .entry:hover {
     font-size: var(--font-body);
 }
 
+.border-left,
+.border-right {
+    position: fixed;
+    top: 0;
+    width: 1.5px; /* Adjust as needed */
+    height: 100vh;
+    background-color: black; /* Adjust color as needed */
+    z-index: 9999;
+}
+.border-left {
+    left: 0;
+}
+
+.border-right {
+    right: 0;
+}
+
 #progress {
     position: fixed;
     bottom: 0;
     left: 0;
     height: 24px;
     border-top: 1.5px solid black;
+    border-bottom:  1.5px solid black;;
     background: var(--light);
     width: 100vw;
     z-index: 9998;
@@ -196,6 +214,12 @@ body.disableHover .entry:hover {
     cursor: pointer;
 }
 
+.related-word>div:hover {
+    color: var(--red);  
+}
+
+
+
 .related-word.visible {
     opacity: 1;
 }
@@ -205,9 +229,13 @@ body.disableHover .entry:hover {
     text-align: right;
     width: auto;
     display: block;
-    position: relative;
+    /* position: relative; */
     left: calc(-100% - 24px);
     font-size: var(--font-body-small);
+}
+
+p.intro {
+    margin-top: 48px;
 }
 
 #stamp {
@@ -261,8 +289,15 @@ body.disableHover .entry:hover {
     height: 100%;
 }
 
-.entry.suggest, .entry.about {
+.entry.suggest {
     justify-content: flex-start;
+}
+
+.entry.about {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
 }
 
 .entry.suggest > *, .entry.about > * {
@@ -309,6 +344,10 @@ body.disableHover .entry:hover {
     color: inherit;
 }
 
+.ps a:hover {
+    color: var(--red);
+}
+
 .suggest .mobileNavItem {
     top: 0;
 }
@@ -349,7 +388,7 @@ body.disableHover .entry:hover {
 }
 
 .suggest-form label {
-    font-size: 1rem;
+    font-size: var(--font-body-small);
     font-style: italic;
     color: #333;
 }
@@ -486,6 +525,7 @@ body.disableHover .entry:hover {
 
     .mobileNavItem .mNavContent {
         width: 100%;
+        margin-top: 24px;
     }
 
     #mobileOverlay {
@@ -519,7 +559,7 @@ body.disableHover .entry:hover {
     flex-direction: column;
     justify-content: center;
     transition: all 0.5s ease;
-    padding: 32px 32px;
+    padding: 32px 48px;
     cursor: pointer;
     overflow-y: hidden;
 }
@@ -569,6 +609,7 @@ body.disableHover .entry:hover {
 .closeIcon {
     width: 14px;
     height: auto;
+    opacity: 0;
 }
 
 .mobileNavItem.open .closeIcon {

@@ -21,6 +21,7 @@ export function appendAbout(entriesContainer) {
     }
 
     aboutEntry.innerHTML = `
+    
         <p class="intro">
             <img id="stamp" src="images/wordbyword.png" />
             Dear reader,<br><br>
@@ -39,7 +40,7 @@ export function appendAbout(entriesContainer) {
             Peruse it slowly,<br>
             Kalyani
             <br><br>
-            <span class="ps">P.S. Project by yours truly, with the website brought to life by <a href="realnice.net">Jon Packles.</a></span>
+            <span class="ps">P.S. Project by yours truly, with the website brought to life by <a href="http://realnice.net">Jon Packles.</a></span>
         </p>
     `;
 
@@ -49,7 +50,7 @@ export function appendAbout(entriesContainer) {
         addClock(aboutEntry.children[0], true);
     } else {
         entriesContainer.prepend(aboutEntry);
-        addClock(aboutEntry.children[0], false);
+        addClock(aboutEntry, false);
 
     }
 }
