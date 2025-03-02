@@ -114,7 +114,7 @@ export class Entry {
                 this.relatedWordsIndex++;
             }
             
-            if(this.relatedWordsIndex === this.relatedWordElements.length - 1){
+            if(this.relatedWordsIndex === this.relatedWordElements.length){
                 this.stopTimer()
             }
             

@@ -34,20 +34,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         entryElement.innerHTML = ` 
             <div class="safe-area">
-                <div class="related-word"><div>${data.relatedWords[0]}</div></div>
-                <div class="related-word"><div>${data.relatedWords[1]}</div></div>
-                <div class="related-word"><div>${data.relatedWords[2]}</div></div>
-                
+            ${data.relatedWords[0] ? `<div class="related-word"><div>${data.relatedWords[0]}</div></div>` : ''}
+            ${data.relatedWords[1] ? `<div class="related-word"><div>${data.relatedWords[1]}</div></div>` : ''}
+            ${data.relatedWords[2] ? `<div class="related-word"><div>${data.relatedWords[2]}</div></div>` : ''}
             </div>
             <div class="entry-content">
-                <h2 class="word">
-                    ${data.word} <span class="word-type">${data.pos}</span>
-                </h2>
-                <p class="definition">${data.description}</p>
+            <h2 class="word">
+                ${data.word} <span class="word-type">${data.pos}</span>
+            </h2>
+            <p class="definition">${data.description}</p>
             </div>
             <div class="safe-area">
-                <div class="related-word"><div>${data.relatedWords[3]}</div></div>
-                <div class="related-word"><div>${data.relatedWords[4]}</div></div>
+            ${data.relatedWords[3] ? `<div class="related-word"><div>${data.relatedWords[3]}</div></div>` : ''}
+            ${data.relatedWords[4] ? `<div class="related-word"><div>${data.relatedWords[4]}</div></div>` : ''}
             </div>
         `;
         entriesContainer.appendChild(entryElement);
@@ -170,50 +169,62 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     let isAnimating = false;
-    let SCROLL_THRESHOLD = 10;
+    let SCROLL_THRESHOLD = 20;
 
 
     // interaction handlers
 
     function handleScroll(event) {
+
         if (isAnimating) return;
-    
+
+        if (currentIndex === 0){
+            SCROLL_THRESHOLD = 50;
+        } else {
+            SCROLL_THRESHOLD = 20;
+        }
+
         if (document.querySelector('.mobileNavItem.open')) {
             return;
         }
-    
+
         const isTouchEvent = event.type === "touchmove";
-    
+
         let deltaY, deltaX;
-    
+
         if (isTouchEvent) {
-            // For touch events, use manually calculated delta values
             deltaY = -Math.abs(event.deltaY || 0);
             deltaX = -Math.abs(event.deltaX || 0);
         } else {
-            // For mouse wheel events, use event properties
             deltaY = Math.abs(event.deltaY);
             deltaX = Math.abs(event.deltaX);
         }
-    
+
         if (deltaY < SCROLL_THRESHOLD && deltaX < SCROLL_THRESHOLD) {
             return;
         }
-    
+
         const direction = deltaX > deltaY
             ? (event.deltaX > 0 ? 1 : -1)
             : (event.deltaY > 0 ? 1 : -1);
-    
-        // Reverse direction for touch events
-        const finalDirection = isTouchEvent ? -direction : direction;
-    
-        if ((finalDirection === 1 && currentIndex < entryCount - 1) || (finalDirection === -1 && currentIndex > 0)) {
-            
 
+        const finalDirection = isTouchEvent ? -direction : direction;
+
+        const scrollableElement = document.querySelector('.scrollable');
+        if (scrollableElement) {
+            const atBottom = scrollableElement.scrollHeight - scrollableElement.scrollTop === scrollableElement.clientHeight;
+            const atTop = scrollableElement.scrollTop === 0;
+
+            if ((finalDirection === 1 && !atBottom) || (finalDirection === -1 && !atTop)) {
+                return;
+            }
+        }
+
+        if ((finalDirection === 1 && currentIndex < entryCount - 1) || (finalDirection === -1 && currentIndex > 0)) {
             currentIndex += finalDirection;
             isAnimating = true;
             changeEntry(currentIndex);
-    
+
             setTimeout(() => {
                 isAnimating = false;
             }, 800);

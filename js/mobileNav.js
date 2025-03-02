@@ -1,8 +1,8 @@
 export function initializeMobileNav() {
     let container = document.querySelector('.container');
 
-    let aboutNavItem = createNavItem('Incomplete Glossary of Time', 'mNavAbout');
-    let suggestNavItem = createNavItem('Suggest a word', 'mNavSuggest');
+    let aboutNavItem = createNavItem('Incomplete Glossary of Time', 'mNavAbout', '../images/logos/1.png');
+    let suggestNavItem = createNavItem('Suggest a word', 'mNavSuggest', '../images/logos/3.png');
 
     let overlay = document.createElement('div');
     overlay.id = 'mobileOverlay';
@@ -15,12 +15,14 @@ export function initializeMobileNav() {
   
 }
 
-function createNavItem(text, id){
+function createNavItem(text, id, iconSrc){
     let navItem = document.createElement('div');
     
     let navItemContent = document.createElement('div');
     navItemContent.classList.add('navItemContent');
     
+
+   
     let navHeader = document.createElement('h3');
     let closeIcon = document.createElement('img');
     
@@ -32,7 +34,15 @@ function createNavItem(text, id){
         event.stopPropagation();
         closeMobileNav();
     });
+
+    let icon = document.createElement('img');
+    icon.src = iconSrc;
+    icon.alt = 'Logo';
+    icon.classList.add('mLogo');
+    navItemContent.appendChild(icon);
     
+    
+
     
     navItemContent.appendChild(navHeader);
     navItemContent.appendChild(closeIcon);

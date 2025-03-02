@@ -40,7 +40,7 @@ export function appendAbout(entriesContainer) {
             Peruse it slowly,<br>
             Kalyani
             <br><br>
-            <span class="ps">P.S. Project by yours truly, with the website brought to life by <a href="http://realnice.net">Jon Packles.</a></span>
+            <span class="ps">P.S. Project by yours truly, with the website brought to life by <a href="https://realnice.net/">Jon Packles.</a></span>
         </p>
     `;
 

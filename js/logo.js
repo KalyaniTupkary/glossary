@@ -1,7 +1,7 @@
 export function initializeLogoAnimation() {
     const logos = document.querySelectorAll(".logo"); // Select all .logo elements
     const imagesPath = "./images/logos/"; // Path to the images folder
-    const totalImages = 4; // Total number of PNGs in the folder
+    const totalImages = 7; // Total number of PNGs in the folder
     const intervalTime = 800; // Time between image changes (ms)
 
     logos.forEach((logo) => {
