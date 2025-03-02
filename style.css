@@ -569,7 +569,7 @@ p.intro {
     border: 1.5px solid black;
     box-sizing: border-box;
     transition: all 0.5s ease;
-    padding: 24px 32px 48px 56px;
+    padding: 24px 56px 48px 56px;
     cursor: pointer;
     overflow-y: hidden;
 }
