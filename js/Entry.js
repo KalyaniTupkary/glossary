@@ -20,13 +20,7 @@ export class Entry {
         })
 
         // Reorder relatedWordElements to 0, 3, 1, 4, 2
-        this.relatedWordElements = [
-            this.relatedWordElements[0],
-            this.relatedWordElements[3],
-            this.relatedWordElements[1],
-            this.relatedWordElements[4],
-            this.relatedWordElements[2]
-        ];
+        this.relatedWordElements = this.relatedWordElements.sort(() => Math.random() - 0.5);
         
         this.updatePosition();
         this.addClickListener();
