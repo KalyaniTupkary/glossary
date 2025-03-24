@@ -3,7 +3,7 @@
         "intro": "Dear reader,<br><br>More than what we can do with words, this glossary uncovers what words can do with us. These words give form to the nuances from the unexplored nooks of everyday life—leaky sensations, feelings, in-between moments, and fleeting experiences that can be named but don’t seem to be.<br><br>We all carry textured experiences of time, yet our vocabulary for them remains sparse. There are gaping holes in the lexicon of time that we don’t even know we are missing. When these experiences remain unnamed, they remain unknown.<br><br>We all carry textured experiences of time, yet our vocabulary for them remains sparse. There are gaping holes in the lexicon of time that we don’t even know we are missing. When these experiences remain unnamed, they remain unknown.<br><br>Peruse it slowly,<br>Kalyani<br><br>P.S. Project by yours truly, with the website brought to life by Jon Packles."
     },
     "suggest": {
-        "text": "Words can render new realities and expand our perception of time. Share your experiences—specific or vague—that might otherwise fall through the cracks of conventional language.",
+        "text": "Share your experiences—specific or vague—that might otherwise fall through the cracks of conventional language.",
         "form": {
             "fields": [
                 { "label": "name", "type": "text", "id": "name", "required": true },
