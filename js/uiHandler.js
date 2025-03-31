@@ -25,22 +25,17 @@ export function appendAbout(entriesContainer) {
         <p class="intro">
             <img id="stamp" src="images/wordbyword.png" />
             Dear reader,<br><br>
-            More than what we can do with words, this glossary uncovers what words can do with us. 
-            These words give form to the nuanced phenomena we encounter—leaky sensations, feelings, 
-            in-between moments, and fleeting experiences that can be named but don’t seem to be.
+            More than what we can do with words, this glossary uncovers what words can do with us. These words give form to the unexplored nooks of everyday life—leaky sensations, fleeting feelings, in-between moments, and nuanced experiences that can be named but don’t seem to be.
             <br><br>
-            We all have these textured experiences of time, but a rather limited set of words to describe them. 
-            There are gaping holes in the lexicon of time that we don’t even know we are missing. 
-            When these experiences remain unnamed, they remain unwritten, undefined and hence unknown.
+            We carry textured experiences of time, yet our vocabulary for them is surprisingly sparse. There are gaping holes in the lexicon of time that we don’t even realize we are missing. When these encounters remain unnamed, they remain unknown.
+
             <br><br>
-            To name them, I tinkered with ChatGPT, feeding it elusive experiences as prompts. 
-            What began as a playful experiment soon drew on AI’s ability to ‘hallucinate’ or imagine notions 
-            beyond our known reality to deepen our understanding of time. 
+            To name them, I tinkered with AI tools (ChatGPT, Gemini and Claude) feeding them elusive experiences as prompts. What began as a playful experiment soon drew on AI’s ability to ‘hallucinate’ or imagine notions beyond the world we know. Each new word unearthed worlds within our world.
             <br><br>
-            Peruse it slowly,<br>
+            Word by word,<br>
             Kalyani
             <br><br>
-            <span class="ps">P.S. Project by yours truly, with the website brought to life by <a href="https://realnice.net/">Jon Packles.</a></span>
+            <span class="ps">P.S. Project by <a href="https://kalyanitupkary.com/">yours truly</a>, with the website brought to life by <a href="https://realnice.net/">Jon Packles.</a></span>
         </p>
     `;
 
@@ -66,8 +61,7 @@ export function appendSuggest(entriesContainer) {
     suggestEntry.innerHTML = `
         <div class="suggest-content">
             <p class="suggest-text">
-                Words can render new realities and expand our perception of time. 
-                Share your experiences—specific or vague—that might otherwise fall through the cracks of conventional language.
+                This glossary offers ways of ‘feeling’ time and more importantly, naming what we feel - which is fundamental to sense-making. Share your encounters—specific or vague—that might otherwise slip through the weave of language.
             </p>
             <form class="suggest-form" id="suggestForm">
                 <div class="form-group">
