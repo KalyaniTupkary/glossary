@@ -1,4 +1,5 @@
 import { addClock } from "./clock.js";
+import { fetchTextContent } from './entryDataHandler.js';
 
 export function hideLoadingScreen(loaderTimeout) {
     const loadingScreen = document.getElementById("load");
@@ -12,7 +13,7 @@ export function isMobileDevice() {
     return window.innerWidth < 768; // Adjust breakpoint if needed
 }
 
-export function appendAbout(entriesContainer) {
+export async function appendAbout(entriesContainer) {
     const isMobile = isMobileDevice();
     const aboutEntry = document.createElement("div");
     aboutEntry.classList.add("about");
@@ -20,24 +21,18 @@ export function appendAbout(entriesContainer) {
         aboutEntry.classList.add("entry");
     }
 
+    const textData = await fetchTextContent();
+    
     aboutEntry.innerHTML = `
     
         <p class="intro">
             <img id="stamp" src="images/wordbyword.png" />
-            Dear reader,<br><br>
-            More than what we can do with words, this glossary uncovers what words can do with us. These words give form to the unexplored nooks of everyday life—leaky sensations, fleeting feelings, in-between moments, and nuanced experiences that can be named but don’t seem to be.
-            <br><br>
-            We carry textured experiences of time, yet our vocabulary for them is surprisingly sparse. There are gaping holes in the lexicon of time that we don’t even realize we are missing. When these encounters remain unnamed, they remain unknown.
-
-            <br><br>
-            To name them, I tinkered with AI tools (ChatGPT, Gemini and Claude) feeding them elusive experiences as prompts. What began as a playful experiment soon drew on AI’s ability to ‘hallucinate’ or imagine notions beyond the world we know. Each new word unearthed worlds within our world.
-            <br><br>
-            Word by word,<br>
-            Kalyani
-            <br><br>
+            ${textData.about.map(text => `${text}<br><br>`).join('')}
             <span class="ps">P.S. Project by <a href="https://kalyanitupkary.com/">yours truly</a>, with the website brought to life by <a href="https://realnice.net/">Jon Packles.</a></span>
+
         </p>
     `;
+    
 
     if (isMobile) {
         aboutEntry.classList.add("mNavContent");
@@ -46,11 +41,10 @@ export function appendAbout(entriesContainer) {
     } else {
         entriesContainer.prepend(aboutEntry);
         addClock(aboutEntry, false);
-
     }
 }
 
-export function appendSuggest(entriesContainer) {
+export async function appendSuggest(entriesContainer) {
     const isMobile = isMobileDevice();
     const suggestEntry = document.createElement("div");
     suggestEntry.classList.add("suggest");
@@ -58,10 +52,13 @@ export function appendSuggest(entriesContainer) {
         suggestEntry.classList.add("entry");
     }
 
+    const textData = await fetchTextContent();
+    
+
     suggestEntry.innerHTML = `
         <div class="suggest-content">
             <p class="suggest-text">
-                This glossary offers ways of ‘feeling’ time and more importantly, naming what we feel - which is fundamental to sense-making. Share your encounters—specific or vague—that might otherwise slip through the weave of language.
+                ${textData.suggest[0]}
             </p>
             <form class="suggest-form" id="suggestForm">
                 <div class="form-group">

@@ -70,9 +70,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     if(!isMobileDevice()){
-        appendSuggest(entriesContainer);
+        await appendSuggest(entriesContainer);
     } else {
-        appendSuggest(document.querySelector(".container"));
+        await appendSuggest(document.querySelector(".container"));
     }
 
     function checkAndInitializeForm() {
